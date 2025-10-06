@@ -128,10 +128,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Link not found" });
       }
 
-      // Increment link clicks for the profile
+      // Increment link clicks for the profile and individual link
       await storage.incrementLinkClicks(link.profileId);
+      await storage.incrementIndividualLinkClick(id);
       
       res.json({ url: link.url });
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Get analytics data
+  app.get("/api/analytics/:profileId", async (req, res) => {
+    try {
+      const { profileId } = req.params;
+      const profile = await storage.getProfileById(profileId);
+      
+      if (!profile) {
+        return res.status(404).json({ message: "Profile not found" });
+      }
+
+      const links = await storage.getSocialLinks(profileId);
+      
+      res.json({
+        profile: {
+          views: profile.profileViews || 0,
+          totalClicks: profile.linkClicks || 0,
+        },
+        links: links.map(link => ({
+          id: link.id,
+          title: link.title,
+          platform: link.platform,
+          clicks: link.clicks || 0,
+          url: link.url,
+        })),
+      });
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });
     }

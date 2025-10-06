@@ -22,6 +22,7 @@ export const socialLinks = pgTable("social_links", {
   description: text("description"),
   order: integer("order").notNull().default(0),
   isActive: boolean("is_active").default(true),
+  clicks: integer("clicks").default(0),
 });
 
 export const insertProfileSchema = createInsertSchema(profiles).omit({

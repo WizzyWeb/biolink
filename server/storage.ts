@@ -18,6 +18,7 @@ export interface IStorage {
   updateSocialLink(id: string, updates: Partial<UpdateSocialLink>): Promise<SocialLink | undefined>;
   deleteSocialLink(id: string): Promise<boolean>;
   reorderSocialLinks(linkIds: string[]): Promise<void>;
+  incrementIndividualLinkClick(linkId: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -107,6 +108,13 @@ export class DatabaseStorage implements IStorage {
         .set({ order: i + 1 })
         .where(eq(socialLinks.id, linkIds[i]));
     }
+  }
+
+  async incrementIndividualLinkClick(linkId: string): Promise<void> {
+    await db
+      .update(socialLinks)
+      .set({ clicks: sql`${socialLinks.clicks} + 1` })
+      .where(eq(socialLinks.id, linkId));
   }
 }
 

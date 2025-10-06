@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useParams } from "wouter";
+import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Edit, Eye } from "lucide-react";
+import { Edit, Eye, BarChart3 } from "lucide-react";
 import ProfileSection from "@/components/profile-section";
 import SocialLinksList from "@/components/social-links-list";
 import AddLinkModal from "@/components/add-link-modal";
@@ -126,6 +126,15 @@ export default function Home() {
                   <span className="text-xl">+</span>
                   <span>Add New Link</span>
                 </Button>
+                <Link href={`/analytics/${data.profile.id}`}>
+                  <Button
+                    className="w-full bg-secondary hover:bg-secondary/90 text-white px-6 py-4 rounded-card font-semibold flex items-center justify-center gap-3 shadow-md hover:shadow-lg"
+                    data-testid="button-analytics"
+                  >
+                    <BarChart3 className="w-5 h-5" />
+                    <span>View Analytics</span>
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
