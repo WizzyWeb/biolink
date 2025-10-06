@@ -25,8 +25,7 @@ export default function Home() {
   const profileUsername = username || "sarahmitchell";
 
   useEffect(() => {
-    const searchParams = location.includes('?') ? location.split('?')[1] : '';
-    const urlParams = new URLSearchParams(searchParams);
+    const urlParams = new URLSearchParams(window.location.search);
     const editParam = urlParams.get('edit');
     const hasPermission = editParam === 'shivam';
     setCanEdit(hasPermission);
