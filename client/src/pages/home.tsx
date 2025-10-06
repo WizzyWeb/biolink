@@ -22,12 +22,12 @@ export default function Home() {
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
   const [canEdit, setCanEdit] = useState(false);
 
-  const profileUsername = username || "sarahmitchell";
+  const profileUsername = username || "demo";
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const editParam = urlParams.get('edit');
-    const hasPermission = editParam === 'shivam';
+    const hasPermission = editParam === 'true';
     setCanEdit(hasPermission);
     
     if (!hasPermission) {

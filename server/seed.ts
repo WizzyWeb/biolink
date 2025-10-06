@@ -6,7 +6,7 @@ async function seed() {
   console.log("Seeding database...");
 
   // Check if default profile already exists
-  const existing = await db.select().from(profiles).where(eq(profiles.username, "sarahmitchell"));
+  const existing = await db.select().from(profiles).where(eq(profiles.username, "demo"));
   
   if (existing.length > 0) {
     console.log("Default profile already exists, skipping seed.");
@@ -17,7 +17,7 @@ async function seed() {
   const [profile] = await db
     .insert(profiles)
     .values({
-      username: "sarahmitchell",
+      username: "demo",
       displayName: "Sarah Mitchell",
       bio: "Digital Creator | UX Designer | Coffee Enthusiast ☕\nSharing my journey through design, tech, and lifestyle",
       profileImageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=300",
@@ -32,8 +32,8 @@ async function seed() {
       profileId: profile.id,
       platform: "instagram",
       title: "Instagram",
-      url: "https://instagram.com/sarahmitchell",
-      description: "@sarahmitchell • Daily inspiration & behind the scenes",
+      url: "https://instagram.com/demo",
+      description: "@demo • Daily inspiration & behind the scenes",
       order: 1,
     },
     {
@@ -48,7 +48,7 @@ async function seed() {
       profileId: profile.id,
       platform: "linkedin",
       title: "LinkedIn",
-      url: "https://linkedin.com/in/sarahmitchell",
+      url: "https://linkedin.com/in/demo",
       description: "Professional network & portfolio",
       order: 3,
     },
@@ -64,7 +64,7 @@ async function seed() {
       profileId: profile.id,
       platform: "youtube",
       title: "YouTube",
-      url: "https://youtube.com/sarahmitchell",
+      url: "https://youtube.com/demo",
       description: "Design tutorials & creative process videos",
       order: 5,
     },
@@ -72,7 +72,7 @@ async function seed() {
       profileId: profile.id,
       platform: "github",
       title: "GitHub",
-      url: "https://github.com/sarahmitchell",
+      url: "https://github.com/demo",
       description: "Open source projects & code repositories",
       order: 6,
     },
@@ -80,7 +80,7 @@ async function seed() {
       profileId: profile.id,
       platform: "website",
       title: "Portfolio Website",
-      url: "https://sarahmitchell.design",
+      url: "https://demo.design",
       description: "View my complete design portfolio",
       order: 7,
     },
@@ -88,7 +88,7 @@ async function seed() {
       profileId: profile.id,
       platform: "newsletter",
       title: "Newsletter",
-      url: "https://sarahmitchell.substack.com",
+      url: "https://demo.substack.com",
       description: "Subscribe for weekly design insights",
       order: 8,
     },
