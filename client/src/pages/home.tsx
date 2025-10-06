@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "wouter";
+import { useParams, Link, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Edit, Eye, BarChart3 } from "lucide-react";
@@ -16,6 +16,7 @@ interface ProfileData {
 
 export default function Home() {
   const { username } = useParams<{ username?: string }>();
+  const [location] = useLocation();
   const [isEditMode, setIsEditMode] = useState(false);
   const [isAddLinkModalOpen, setIsAddLinkModalOpen] = useState(false);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
@@ -24,10 +25,16 @@ export default function Home() {
   const profileUsername = username || "sarahmitchell";
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
+    const searchParams = location.includes('?') ? location.split('?')[1] : '';
+    const urlParams = new URLSearchParams(searchParams);
     const editParam = urlParams.get('edit');
-    setCanEdit(editParam === profileUsername);
-  }, [profileUsername]);
+    const hasPermission = editParam === 'shivam';
+    setCanEdit(hasPermission);
+    
+    if (!hasPermission) {
+      setIsEditMode(false);
+    }
+  }, [location]);
 
   const { data, isLoading, error } = useQuery<ProfileData>({
     queryKey: ["/api/profile", profileUsername],
