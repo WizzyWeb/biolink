@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -19,8 +19,15 @@ export default function Home() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isAddLinkModalOpen, setIsAddLinkModalOpen] = useState(false);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+  const [canEdit, setCanEdit] = useState(false);
 
   const profileUsername = username || "sarahmitchell";
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const editParam = urlParams.get('edit');
+    setCanEdit(editParam === profileUsername);
+  }, [profileUsername]);
 
   const { data, isLoading, error } = useQuery<ProfileData>({
     queryKey: ["/api/profile", profileUsername],
@@ -88,19 +95,21 @@ export default function Home() {
 
   return (
     <div className="min-h-screen py-8 px-4">
-      {/* Edit Mode Toggle */}
-      <div className="fixed top-5 right-5 z-50">
-        <Button
-          onClick={() => setIsEditMode(!isEditMode)}
-          className={`bg-primary hover:bg-primary-light text-white px-6 py-3 rounded-full shadow-lg font-semibold flex items-center gap-2 ${
-            isEditMode ? "pulse-animation" : ""
-          }`}
-          data-testid="button-edit-mode"
-        >
-          {isEditMode ? <Eye className="w-5 h-5" /> : <Edit className="w-5 h-5" />}
-          <span>{isEditMode ? "View Mode" : "Edit Profile"}</span>
-        </Button>
-      </div>
+      {/* Edit Mode Toggle - Only visible with correct URL parameter */}
+      {canEdit && (
+        <div className="fixed top-5 right-5 z-50">
+          <Button
+            onClick={() => setIsEditMode(!isEditMode)}
+            className={`bg-primary hover:bg-primary-light text-white px-6 py-3 rounded-full shadow-lg font-semibold flex items-center gap-2 ${
+              isEditMode ? "pulse-animation" : ""
+            }`}
+            data-testid="button-edit-mode"
+          >
+            {isEditMode ? <Eye className="w-5 h-5" /> : <Edit className="w-5 h-5" />}
+            <span>{isEditMode ? "View Mode" : "Edit Profile"}</span>
+          </Button>
+        </div>
+      )}
 
       <div className="max-w-2xl mx-auto">
         <ProfileSection
