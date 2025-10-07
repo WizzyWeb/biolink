@@ -7,6 +7,7 @@ import ProfileSection from "@/components/profile-section";
 import SocialLinksList from "@/components/social-links-list";
 import AddLinkModal from "@/components/add-link-modal";
 import EditProfileModal from "@/components/edit-profile-modal";
+import EditLinkModal from "@/components/edit-link-modal";
 import { type Profile, type SocialLink } from "@shared/schema";
 
 interface ProfileData {
@@ -20,14 +21,16 @@ export default function Home() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isAddLinkModalOpen, setIsAddLinkModalOpen] = useState(false);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+  const [isEditLinkModalOpen, setIsEditLinkModalOpen] = useState(false);
+  const [selectedLink, setSelectedLink] = useState<SocialLink | null>(null);
   const [canEdit, setCanEdit] = useState(false);
 
-  const profileUsername = username || "demo";
+  const profileUsername = username || "shivam";
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const editParam = urlParams.get('edit');
-    const hasPermission = editParam === 'true';
+    const hasPermission = editParam === 'shivam';
     setCanEdit(hasPermission);
     
     if (!hasPermission) {
@@ -65,6 +68,11 @@ export default function Home() {
     if (url) {
       window.open(url, "_blank");
     }
+  };
+
+  const handleEditLink = (link: SocialLink) => {
+    setSelectedLink(link);
+    setIsEditLinkModalOpen(true);
   };
 
   if (isLoading) {
@@ -159,6 +167,7 @@ export default function Home() {
           links={data.links} 
           isEditMode={isEditMode}
           profileId={data.profile.id}
+          onEditLink={handleEditLink}
         />
 
         {/* Share Section */}
@@ -234,6 +243,12 @@ export default function Home() {
         isOpen={isEditProfileModalOpen}
         onClose={() => setIsEditProfileModalOpen(false)}
         profile={data.profile}
+      />
+
+      <EditLinkModal
+        isOpen={isEditLinkModalOpen}
+        onClose={() => setIsEditLinkModalOpen(false)}
+        link={selectedLink}
       />
     </div>
   );

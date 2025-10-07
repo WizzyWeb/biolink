@@ -9,9 +9,10 @@ interface SocialLinksListProps {
   links: SocialLink[];
   isEditMode: boolean;
   profileId: string;
+  onEditLink: (link: SocialLink) => void;
 }
 
-export default function SocialLinksList({ links, isEditMode, profileId }: SocialLinksListProps) {
+export default function SocialLinksList({ links, isEditMode, profileId, onEditLink }: SocialLinksListProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -77,7 +78,7 @@ export default function SocialLinksList({ links, isEditMode, profileId }: Social
     reorderLinksMutation.mutate(linkIds);
   };
 
-  const handleLinkClick = async (link: SocialLink, e: React.MouseEvent<HTMLDivElement>) => {
+  const handleLinkClick = async (link: SocialLink, e: React.MouseEvent) => {
     if (isEditMode) {
       e.preventDefault();
       return;
@@ -112,6 +113,7 @@ export default function SocialLinksList({ links, isEditMode, profileId }: Social
             link={link}
             isEditMode={isEditMode}
             onDelete={() => handleDeleteLink(link.id)}
+            onEdit={() => onEditLink(link)}
             onClick={(e) => handleLinkClick(link, e)}
           />
         </div>
