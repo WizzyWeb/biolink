@@ -7,14 +7,14 @@ Welcome to the BioLink documentation! This index will help you find the informat
 ## 🚀 Getting Started
 
 ### New Users
-1. **[README](./README.md)** - Start here! Project overview and basic setup
-2. **[Quick Start Guide](./QUICKSTART.md)** - Get running in 10 minutes
-3. **[Features List](./FEATURES.md)** - What BioLink can do
+1. **[README](./docs/README.md)** - Start here! Project overview and basic setup
+2. **[Quick Start Guide](./docs/QUICKSTART.md)** - Get running in 10 minutes
+3. **[Features List](./docs/FEATURES.md)** - What BioLink can do
 
 ### Installation & Deployment
-- **[Quick Start Guide](./QUICKSTART.md#local-development-setup)** - Local setup
-- **[Quick Start Guide](./QUICKSTART.md#deployment-options)** - Cloud deployment
-- **[Quick Start Guide](./QUICKSTART.md#docker-deployment)** - Docker setup
+- **[Quick Start Guide](./docs/QUICKSTART.md#local-development-setup)** - Local setup
+- **[Quick Start Guide](./docs/QUICKSTART.md#deployment-options)** - Cloud deployment
+- **[Quick Start Guide](./docs/QUICKSTART.md#docker-deployment)** - Docker setup
 
 ---
 
@@ -22,20 +22,20 @@ Welcome to the BioLink documentation! This index will help you find the informat
 
 ### Product Documentation
 
-**[Features List](./FEATURES.md)**
+**[Features List](./docs/FEATURES.md)**
 - Current features (v1.0)
 - Planned features (v2.0+)
 - Feature comparison with competitors
 - Request new features
 
-**[Development Roadmap](./ROADMAP.md)**
+**[Development Roadmap](./docs/ROADMAP.md)**
 - Product vision and goals
 - Development phases (Q1-Q4 2025)
 - Feature priorities
 - Timeline and milestones
 - Success metrics
 
-**[Executive Summary](./EXECUTIVE_SUMMARY.md)**
+**[Executive Summary](./docs/EXECUTIVE_SUMMARY.md)**
 - Project overview
 - Market analysis
 - Business model
@@ -44,7 +44,7 @@ Welcome to the BioLink documentation! This index will help you find the informat
 
 ### Technical Documentation
 
-**[Codebase Analysis](./ANALYSIS.md)**
+**[Codebase Analysis](./docs/ANALYSIS.md)**
 - Architecture overview
 - Database schema
 - Code quality assessment
@@ -52,7 +52,7 @@ Welcome to the BioLink documentation! This index will help you find the informat
 - Security considerations
 - Performance optimization
 
-**[Contributing Guide](./CONTRIBUTING.md)**
+**[Contributing Guide](./docs/CONTRIBUTING.md)**
 - Code of conduct
 - Development workflow
 - Code style guidelines
@@ -66,34 +66,34 @@ Welcome to the BioLink documentation! This index will help you find the informat
 ### I want to...
 
 #### Deploy BioLink
-→ [Quick Start Guide](./QUICKSTART.md)  
-→ [Deployment Options](./QUICKSTART.md#deployment-options)  
-→ [Docker Setup](./QUICKSTART.md#docker-deployment)
+→ [Quick Start Guide](./docs/QUICKSTART.md)  
+→ [Deployment Options](./docs/QUICKSTART.md#deployment-options)  
+→ [Docker Setup](./docs/QUICKSTART.md#docker-deployment)
 
 #### Understand the Features
-→ [Features List](./FEATURES.md)  
-→ [README - Features](./README.md#features)  
-→ [Roadmap - Future Features](./ROADMAP.md)
+→ [Features List](./docs/FEATURES.md)  
+→ [README - Features](./docs/README.md#features)  
+→ [Roadmap - Future Features](./docs/ROADMAP.md)
 
 #### Contribute Code
-→ [Contributing Guide](./CONTRIBUTING.md)  
-→ [Development Setup](./CONTRIBUTING.md#development-setup)  
-→ [Code Style Guidelines](./CONTRIBUTING.md#code-style-guidelines)
+→ [Contributing Guide](./docs/CONTRIBUTING.md)  
+→ [Development Setup](./docs/CONTRIBUTING.md#development-setup)  
+→ [Code Style Guidelines](./docs/CONTRIBUTING.md#code-style-guidelines)
 
 #### Understand the Architecture
-→ [Codebase Analysis](./ANALYSIS.md)  
-→ [Technical Stack](./README.md#tech-stack)  
-→ [API Overview](./README.md#api-overview)
+→ [Codebase Analysis](./docs/ANALYSIS.md)  
+→ [Technical Stack](./docs/README.md#tech-stack)  
+→ [API Overview](./docs/README.md#api-overview)
 
 #### Compare with Competitors
-→ [Features Comparison](./FEATURES.md#feature-comparison)  
-→ [Competitive Analysis](./ANALYSIS.md#competitive-analysis)  
-→ [Executive Summary - Competitive Advantage](./EXECUTIVE_SUMMARY.md#competitive-advantage)
+→ [Features Comparison](./docs/FEATURES.md#feature-comparison)  
+→ [Competitive Analysis](./docs/ANALYSIS.md#competitive-analysis)  
+→ [Executive Summary - Competitive Advantage](./docs/EXECUTIVE_SUMMARY.md#competitive-advantage)
 
 #### Plan for the Future
-→ [Development Roadmap](./ROADMAP.md)  
-→ [Immediate Next Steps](./ROADMAP.md#immediate-next-steps-next-30-days)  
-→ [Feature Priorities](./FEATURES.md#feature-priorities)
+→ [Development Roadmap](./docs/ROADMAP.md)  
+→ [Immediate Next Steps](./docs/ROADMAP.md#immediate-next-steps-next-30-days)  
+→ [Feature Priorities](./docs/FEATURES.md#feature-priorities)
 
 ---
 
@@ -102,57 +102,57 @@ Welcome to the BioLink documentation! This index will help you find the informat
 ### For End Users
 
 **Getting Started:**
-1. [README](./README.md) - Overview
-2. [Quick Start](./QUICKSTART.md) - Setup guide
-3. [Features](./FEATURES.md) - What you can do
+1. [README](./docs/README.md) - Overview
+2. [Quick Start](./docs/QUICKSTART.md) - Setup guide
+3. [Features](./docs/FEATURES.md) - What you can do
 
 **Using BioLink:**
-- [First Steps](./QUICKSTART.md#first-steps-after-installation)
-- [Customization](./QUICKSTART.md#customization-current-capabilities)
-- [Analytics](./QUICKSTART.md#understanding-analytics)
-- [Troubleshooting](./QUICKSTART.md#troubleshooting)
+- [First Steps](./docs/QUICKSTART.md#first-steps-after-installation)
+- [Customization](./docs/QUICKSTART.md#customization-current-capabilities)
+- [Analytics](./docs/QUICKSTART.md#understanding-analytics)
+- [Troubleshooting](./docs/QUICKSTART.md#troubleshooting)
 
 ### For Developers
 
 **Setup:**
-1. [Development Setup](./CONTRIBUTING.md#development-setup)
-2. [Development Workflow](./CONTRIBUTING.md#development-workflow)
-3. [Code Style](./CONTRIBUTING.md#code-style-guidelines)
+1. [Development Setup](./docs/CONTRIBUTING.md#development-setup)
+2. [Development Workflow](./docs/CONTRIBUTING.md#development-workflow)
+3. [Code Style](./docs/CONTRIBUTING.md#code-style-guidelines)
 
 **Understanding the Code:**
-- [Architecture Overview](./ANALYSIS.md#architecture-overview)
-- [Database Schema](./ANALYSIS.md#database-schema-analysis)
-- [API Design](./ANALYSIS.md#api-design)
-- [Component Analysis](./ANALYSIS.md#component-analysis)
+- [Architecture Overview](./docs/ANALYSIS.md#architecture-overview)
+- [Database Schema](./docs/ANALYSIS.md#database-schema-analysis)
+- [API Design](./docs/ANALYSIS.md#api-design)
+- [Component Analysis](./docs/ANALYSIS.md#component-analysis)
 
 **Contributing:**
-- [How to Contribute](./CONTRIBUTING.md#how-to-contribute)
-- [Pull Request Process](./CONTRIBUTING.md#pull-request-guidelines)
-- [Testing Guidelines](./CONTRIBUTING.md#testing-guidelines)
+- [How to Contribute](./docs/CONTRIBUTING.md#how-to-contribute)
+- [Pull Request Process](./docs/CONTRIBUTING.md#pull-request-guidelines)
+- [Testing Guidelines](./docs/CONTRIBUTING.md#testing-guidelines)
 
 ### For Project Managers
 
 **Planning:**
-- [Executive Summary](./EXECUTIVE_SUMMARY.md)
-- [Development Roadmap](./ROADMAP.md)
-- [Success Metrics](./ROADMAP.md#success-metrics)
+- [Executive Summary](./docs/EXECUTIVE_SUMMARY.md)
+- [Development Roadmap](./docs/ROADMAP.md)
+- [Success Metrics](./docs/ROADMAP.md#success-metrics)
 
 **Analysis:**
-- [Market Analysis](./EXECUTIVE_SUMMARY.md#problem-statement)
-- [Competitive Landscape](./ANALYSIS.md#competitive-analysis)
-- [Risk Assessment](./EXECUTIVE_SUMMARY.md#risk-analysis)
+- [Market Analysis](./docs/EXECUTIVE_SUMMARY.md#problem-statement)
+- [Competitive Landscape](./docs/ANALYSIS.md#competitive-analysis)
+- [Risk Assessment](./docs/EXECUTIVE_SUMMARY.md#risk-analysis)
 
 ### For Investors/Sponsors
 
 **Overview:**
-- [Executive Summary](./EXECUTIVE_SUMMARY.md)
-- [Business Model](./EXECUTIVE_SUMMARY.md#business-model)
-- [Growth Strategy](./EXECUTIVE_SUMMARY.md#growth-strategy)
+- [Executive Summary](./docs/EXECUTIVE_SUMMARY.md)
+- [Business Model](./docs/EXECUTIVE_SUMMARY.md#business-model)
+- [Growth Strategy](./docs/EXECUTIVE_SUMMARY.md#growth-strategy)
 
 **Opportunity:**
-- [Market Size](./EXECUTIVE_SUMMARY.md#market-size)
-- [Competitive Advantage](./EXECUTIVE_SUMMARY.md#competitive-advantage)
-- [Success Metrics](./EXECUTIVE_SUMMARY.md#success-metrics)
+- [Market Size](./docs/EXECUTIVE_SUMMARY.md#market-size)
+- [Competitive Advantage](./docs/EXECUTIVE_SUMMARY.md#competitive-advantage)
+- [Success Metrics](./docs/EXECUTIVE_SUMMARY.md#success-metrics)
 
 ---
 
@@ -162,13 +162,13 @@ Welcome to the BioLink documentation! This index will help you find the informat
 
 | Document | Purpose | Read Time |
 |----------|---------|-----------|
-| [README](./README.md) | Project overview | 5 min |
-| [Quick Start](./QUICKSTART.md) | Installation guide | 10 min |
-| [Features](./FEATURES.md) | Feature reference | 15 min |
-| [Roadmap](./ROADMAP.md) | Future plans | 20 min |
-| [Analysis](./ANALYSIS.md) | Technical deep-dive | 30 min |
-| [Contributing](./CONTRIBUTING.md) | Contribution guide | 15 min |
-| [Executive Summary](./EXECUTIVE_SUMMARY.md) | Business overview | 10 min |
+| [README](./docs/README.md) | Project overview | 5 min |
+| [Quick Start](./docs/QUICKSTART.md) | Installation guide | 10 min |
+| [Features](./docs/FEATURES.md) | Feature reference | 15 min |
+| [Roadmap](./docs/ROADMAP.md) | Future plans | 20 min |
+| [Analysis](./docs/ANALYSIS.md) | Technical deep-dive | 30 min |
+| [Contributing](./docs/CONTRIBUTING.md) | Contribution guide | 15 min |
+| [Executive Summary](./docs/EXECUTIVE_SUMMARY.md) | Business overview | 10 min |
 
 ### Common Tasks
 
@@ -180,52 +180,52 @@ echo 'DATABASE_URL=your_db_url' > .env
 npm run db:push
 npm run dev
 ```
-→ [Full Setup Guide](./QUICKSTART.md)
+→ [Full Setup Guide](./docs/QUICKSTART.md)
 
 **Database Configuration:**
-- [Neon Setup](./QUICKSTART.md#option-1-neon-recommended-for-beginners)
-- [Local PostgreSQL](./QUICKSTART.md#option-2-local-postgresql)
-- [Docker PostgreSQL](./QUICKSTART.md#option-3-docker-postgresql)
+- [Neon Setup](./docs/QUICKSTART.md#option-1-neon-recommended-for-beginners)
+- [Local PostgreSQL](./docs/QUICKSTART.md#option-2-local-postgresql)
+- [Docker PostgreSQL](./docs/QUICKSTART.md#option-3-docker-postgresql)
 
 **Deployment:**
-- [Vercel](./QUICKSTART.md#vercel-frontend)
-- [Railway](./QUICKSTART.md#railway-full-stack)
-- [Docker](./QUICKSTART.md#docker-deployment)
+- [Vercel](./docs/QUICKSTART.md#vercel-frontend)
+- [Railway](./docs/QUICKSTART.md#railway-full-stack)
+- [Docker](./docs/QUICKSTART.md#docker-deployment)
 
 ---
 
 ## 🔍 Search by Topic
 
 ### Authentication & Security
-- [Current Auth (URL Parameter)](./README.md#edit-mode-url-gated)
-- [Planned Auth System](./ROADMAP.md#11-user-authentication-system)
-- [Security Checklist](./ANALYSIS.md#security-checklist)
-- [Security Roadmap](./ROADMAP.md#74-security--compliance)
+- [Current Auth (URL Parameter)](./docs/README.md#edit-mode-url-gated)
+- [Planned Auth System](./docs/ROADMAP.md#11-user-authentication-system)
+- [Security Checklist](./docs/ANALYSIS.md#security-checklist)
+- [Security Roadmap](./docs/ROADMAP.md#74-security--compliance)
 
 ### Analytics & Metrics
-- [Current Analytics](./FEATURES.md#analytics-dashboard)
-- [Enhanced Analytics Plan](./ROADMAP.md#41-enhanced-analytics)
-- [Success Metrics](./ROADMAP.md#success-metrics)
+- [Current Analytics](./docs/FEATURES.md#analytics-dashboard)
+- [Enhanced Analytics Plan](./docs/ROADMAP.md#41-enhanced-analytics)
+- [Success Metrics](./docs/ROADMAP.md#success-metrics)
 
 ### Customization & Theming
-- [Current Customization](./QUICKSTART.md#customization-current-capabilities)
-- [Theme System Plan](./ROADMAP.md#21-theme-system)
-- [Layout Options Plan](./ROADMAP.md#22-layout-customization)
+- [Current Customization](./docs/QUICKSTART.md#customization-current-capabilities)
+- [Theme System Plan](./docs/ROADMAP.md#21-theme-system)
+- [Layout Options Plan](./docs/ROADMAP.md#22-layout-customization)
 
 ### Database & Storage
-- [Database Schema](./ANALYSIS.md#database-schema-analysis)
-- [Database Setup](./QUICKSTART.md#database-setup-options)
-- [Storage Layer](./ANALYSIS.md#code-quality-assessment)
+- [Database Schema](./docs/ANALYSIS.md#database-schema-analysis)
+- [Database Setup](./docs/QUICKSTART.md#database-setup-options)
+- [Storage Layer](./docs/ANALYSIS.md#code-quality-assessment)
 
 ### API & Integrations
-- [Current API](./README.md#api-overview)
-- [API Design](./ANALYSIS.md#api-design)
-- [Planned Integrations](./ROADMAP.md#43-integrations)
+- [Current API](./docs/README.md#api-overview)
+- [API Design](./docs/ANALYSIS.md#api-design)
+- [Planned Integrations](./docs/ROADMAP.md#43-integrations)
 
 ### Deployment & DevOps
-- [Deployment Options](./QUICKSTART.md#deployment-options)
-- [Docker Setup](./QUICKSTART.md#docker-deployment)
-- [DevOps Roadmap](./ROADMAP.md#73-deployment--devops)
+- [Deployment Options](./docs/QUICKSTART.md#deployment-options)
+- [Docker Setup](./docs/QUICKSTART.md#docker-deployment)
+- [DevOps Roadmap](./docs/ROADMAP.md#73-deployment--devops)
 
 ---
 
@@ -234,39 +234,39 @@ npm run dev
 ### Common Issues
 
 **Installation Problems:**
-→ [Troubleshooting Guide](./QUICKSTART.md#troubleshooting)
+→ [Troubleshooting Guide](./docs/QUICKSTART.md#troubleshooting)
 
 **Database Issues:**
-→ [Database Connection Issues](./QUICKSTART.md#database-connection-issues)
+→ [Database Connection Issues](./docs/QUICKSTART.md#database-connection-issues)
 
 **Build Errors:**
-→ [Build Errors](./QUICKSTART.md#build-errors)
+→ [Build Errors](./docs/QUICKSTART.md#build-errors)
 
 **General Help:**
-→ [GitHub Discussions](../../discussions)  
-→ [Issue Tracker](../../issues)
+→ [GitHub Discussions](../docs/../docs/discussions)  
+→ [Issue Tracker](../docs/../docs/issues)
 
 ---
 
 ## 📱 Community Resources
 
 ### Get Help
-- **Questions:** [GitHub Discussions](../../discussions)
-- **Bug Reports:** [Issue Tracker](../../issues)
-- **Feature Requests:** [Discussions](../../discussions)
+- **Questions:** [GitHub Discussions](../docs/../docs/discussions)
+- **Bug Reports:** [Issue Tracker](../docs/../docs/issues)
+- **Feature Requests:** [Discussions](../docs/../docs/discussions)
 - **Discord:** Coming soon
 - **Email:** [email protected]
 
 ### Stay Updated
-- **GitHub:** [Watch Repository](../../)
+- **GitHub:** [Watch Repository](../docs/../docs/)
 - **Twitter:** [@biolink](#) (Coming soon)
 - **Blog:** Coming soon
 - **Newsletter:** Coming soon
 
 ### Contribute
-- **Code:** [Contributing Guide](./CONTRIBUTING.md)
-- **Documentation:** [Contributing Guide](./CONTRIBUTING.md#documentation-guidelines)
-- **Issues:** [Good First Issues](../../issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+- **Code:** [Contributing Guide](./docs/CONTRIBUTING.md)
+- **Documentation:** [Contributing Guide](./docs/CONTRIBUTING.md#documentation-guidelines)
+- **Issues:** [Good First Issues](../docs/../docs/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 
 ---
 
@@ -294,19 +294,19 @@ npm run dev
 ## 🎯 Next Steps
 
 ### New to BioLink?
-1. Read the [README](./README.md)
-2. Follow the [Quick Start Guide](./QUICKSTART.md)
-3. Explore the [Features](./FEATURES.md)
-4. Join the [Community](../../discussions)
+1. Read the [README](./docs/README.md)
+2. Follow the [Quick Start Guide](./docs/QUICKSTART.md)
+3. Explore the [Features](./docs/FEATURES.md)
+4. Join the [Community](../docs/../docs/discussions)
 
 ### Ready to Contribute?
-1. Read the [Contributing Guide](./CONTRIBUTING.md)
-2. Review the [Roadmap](./ROADMAP.md)
-3. Find a [Good First Issue](../../issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+1. Read the [Contributing Guide](./docs/CONTRIBUTING.md)
+2. Review the [Roadmap](./docs/ROADMAP.md)
+3. Find a [Good First Issue](../docs/../docs/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 4. Submit your first PR!
 
 ### Want to Deploy?
-1. Choose deployment method in [Quick Start](./QUICKSTART.md#deployment-options)
+1. Choose deployment method in [Quick Start](./docs/QUICKSTART.md#deployment-options)
 2. Set up database
 3. Configure environment
 4. Launch your instance!
@@ -321,9 +321,9 @@ This documentation is a living resource. If you:
 - Have suggestions for improvement
 
 Please:
-- Open an [issue](../../issues/new)
-- Start a [discussion](../../discussions/new)
-- Submit a [pull request](../../pulls)
+- Open an [issue](../docs/../docs/issues/new)
+- Start a [discussion](../docs/../docs/discussions/new)
+- Submit a [pull request](../docs/../docs/pulls)
 
 ---
 

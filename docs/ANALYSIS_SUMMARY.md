@@ -397,24 +397,24 @@ Contains:
 ## 🎓 How to Use These Documents
 
 ### For Development
-1. **Start with**: [ROADMAP.md](./ROADMAP.md) - See what to build
-2. **Reference**: [ANALYSIS.md](./ANALYSIS.md) - Understand architecture
-3. **Follow**: [CONTRIBUTING.md](./CONTRIBUTING.md) - Code standards
+1. **Start with**: [ROADMAP.md](./docs/ROADMAP.md) - See what to build
+2. **Reference**: [ANALYSIS.md](./docs/ANALYSIS.md) - Understand architecture
+3. **Follow**: [CONTRIBUTING.md](./docs/CONTRIBUTING.md) - Code standards
 
 ### For Planning
-1. **Start with**: [EXECUTIVE_SUMMARY.md](./EXECUTIVE_SUMMARY.md) - Business overview
-2. **Reference**: [FEATURES.md](./FEATURES.md) - Feature priorities
-3. **Track**: [ROADMAP.md](./ROADMAP.md) - Timeline and milestones
+1. **Start with**: [EXECUTIVE_SUMMARY.md](./docs/EXECUTIVE_SUMMARY.md) - Business overview
+2. **Reference**: [FEATURES.md](./docs/FEATURES.md) - Feature priorities
+3. **Track**: [ROADMAP.md](./docs/ROADMAP.md) - Timeline and milestones
 
 ### For Users
-1. **Start with**: [README.md](./README.md) - Project overview
-2. **Setup with**: [QUICKSTART.md](./QUICKSTART.md) - Installation
-3. **Learn with**: [FEATURES.md](./FEATURES.md) - Capabilities
+1. **Start with**: [README.md](./docs/README.md) - Project overview
+2. **Setup with**: [QUICKSTART.md](./docs/QUICKSTART.md) - Installation
+3. **Learn with**: [FEATURES.md](./docs/FEATURES.md) - Capabilities
 
 ### For Contributors
-1. **Start with**: [CONTRIBUTING.md](./CONTRIBUTING.md) - How to contribute
-2. **Understand**: [ANALYSIS.md](./ANALYSIS.md) - Architecture
-3. **Build from**: [ROADMAP.md](./ROADMAP.md) - Feature list
+1. **Start with**: [CONTRIBUTING.md](./docs/CONTRIBUTING.md) - How to contribute
+2. **Understand**: [ANALYSIS.md](./docs/ANALYSIS.md) - Architecture
+3. **Build from**: [ROADMAP.md](./docs/ROADMAP.md) - Feature list
 
 ---
 

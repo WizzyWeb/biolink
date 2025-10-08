@@ -9,7 +9,7 @@
 
 **A powerful, privacy-first, self-hostable alternative to Linktree and Bio.fm**
 
-[Features](#features) • [Quick Start](./QUICKSTART.md) • [Roadmap](./ROADMAP.md) • [Contributing](./CONTRIBUTING.md) • [Demo](#demo)
+[Features](#features) • [Quick Start](./docs/QUICKSTART.md) • [Roadmap](./docs/ROADMAP.md) • [Contributing](./docs/CONTRIBUTING.md) • [Demo](#demo)
 
 </div>
 
@@ -41,7 +41,7 @@
 - 🛍️ E-commerce features
 - 📧 Email collection & marketing tools
 
-[View all features →](./FEATURES.md) | [See roadmap →](./ROADMAP.md)
+[View all features →](./docs/FEATURES.md) | [See roadmap →](./docs/ROADMAP.md)
 
 ### 🛠️ Tech Stack
 - **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, Radix UI, TanStack Query, Wouter
@@ -242,11 +242,11 @@ vite.config.ts       # Vite config (client build to dist/public)
 
 ## 📚 Documentation
 
-- **[Quick Start Guide](./QUICKSTART.md)** - Get up and running in 10 minutes
-- **[Features List](./FEATURES.md)** - Complete feature overview
-- **[Development Roadmap](./ROADMAP.md)** - Future plans and timeline
-- **[Codebase Analysis](./ANALYSIS.md)** - Technical deep-dive and architecture
-- **[Contributing Guide](./CONTRIBUTING.md)** - How to contribute to the project
+- **[Quick Start Guide](./docs/QUICKSTART.md)** - Get up and running in 10 minutes
+- **[Features List](./docs/FEATURES.md)** - Complete feature overview
+- **[Development Roadmap](./docs/ROADMAP.md)** - Future plans and timeline
+- **[Codebase Analysis](./docs/ANALYSIS.md)** - Technical deep-dive and architecture
+- **[Contributing Guide](./docs/CONTRIBUTING.md)** - How to contribute to the project
 
 ---
 
@@ -255,7 +255,7 @@ vite.config.ts       # Vite config (client build to dist/public)
 We welcome contributions! Whether you're fixing bugs, adding features, or improving documentation, your help is appreciated.
 
 **Getting Started:**
-1. Read the [Contributing Guide](./CONTRIBUTING.md)
+1. Read the [Contributing Guide](./docs/CONTRIBUTING.md)
 2. Check [open issues](../../issues) or [feature requests](../../discussions)
 3. Fork the repository
 4. Create a feature branch
