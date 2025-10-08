@@ -527,9 +527,9 @@ This roadmap will be reviewed and updated:
 ## 📞 Get Involved
 
 We welcome contributions! Check out:
-- [GitHub Issues](./issues) - Report bugs or request features
-- [Discussions](./discussions) - Join the conversation
-- [Contributing Guide](./CONTRIBUTING.md) - Learn how to contribute
+- [GitHub Issues](./docs/issues) - Report bugs or request features
+- [Discussions](./docs/discussions) - Join the conversation
+- [Contributing Guide](./docs/CONTRIBUTING.md) - Learn how to contribute
 - [Discord Community](#) - Chat with other developers
 
 ---

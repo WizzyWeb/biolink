@@ -44,7 +44,7 @@ We are committed to providing a welcoming and inspiring community for all. Pleas
 
 ### Before Submitting
 
-1. Check if the bug has already been reported in [Issues](../../issues)
+1. Check if the bug has already been reported in [Issues](../docs/../docs/issues)
 2. Make sure you're using the latest version
 3. Collect information about the bug
 
@@ -83,8 +83,8 @@ Any other context about the problem.
 
 ### Before Submitting
 
-1. Check the [Roadmap](./ROADMAP.md) - it might be planned!
-2. Search [existing issues](../../issues) for similar suggestions
+1. Check the [Roadmap](./docs/ROADMAP.md) - it might be planned!
+2. Search [existing issues](../docs/../docs/issues) for similar suggestions
 3. Consider if it fits the project's scope and vision
 
 ### Feature Request Template
@@ -415,7 +415,7 @@ const profiles = await db.execute(
 ```typescript
 // Example test structure (when implemented)
 import { describe, it, expect } from 'vitest';
-import { storage } from '../storage';
+import { storage } from '../docs/storage';
 
 describe('Profile Storage', () => {
   it('should create a new profile', async () => {
@@ -570,9 +570,9 @@ Understanding our labels:
 
 ### Project-Specific
 
-- [Architecture Overview](./ANALYSIS.md)
-- [Development Roadmap](./ROADMAP.md)
-- [Quick Start Guide](./QUICKSTART.md)
+- [Architecture Overview](./docs/ANALYSIS.md)
+- [Development Roadmap](./docs/ROADMAP.md)
+- [Quick Start Guide](./docs/QUICKSTART.md)
 
 ---
 
