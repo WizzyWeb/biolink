@@ -1,18 +1,53 @@
-## BioLink — Link in Bio with Analytics
+## BioLink — Open Source Link in Bio Platform
 
-A simple, modern "link in bio" app with profile editing, link management, and built‑in analytics (profile views and per‑link clicks). Edit mode and analytics are protected by a lightweight URL parameter gate.
+<div align="center">
 
-### Features
-- **Profile**: avatar, display name, bio
-- **Links**: add, edit, delete, reorder; supports many platforms
-- **Analytics**: profile views, total clicks, per‑link clicks and distribution
-- **Edit Mode**: toggle editing via `?edit=true`
-- **Share**: quick copy/share buttons for the public profile URL
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
+![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
+![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 
-### Tech Stack
-- Client: React 18, Vite, Tailwind CSS, Radix UI, TanStack Query, Wouter
-- Server: Express (ESM), Vite Dev Middleware (dev), static serving (prod)
-- Database: Postgres (Neon), Drizzle ORM + drizzle‑kit
+**A powerful, privacy-first, self-hostable alternative to Linktree and Bio.fm**
+
+[Features](#features) • [Quick Start](./QUICKSTART.md) • [Roadmap](./ROADMAP.md) • [Contributing](./CONTRIBUTING.md) • [Demo](#demo)
+
+</div>
+
+---
+
+### 🎯 Why BioLink?
+
+- ✅ **100% Open Source** - Complete transparency and control
+- ✅ **Self-Hosted** - Your data, your rules
+- ✅ **No Limits** - Unlimited links, profiles, and analytics
+- ✅ **Free Forever** - No premium tiers or paywalls  
+- ✅ **Privacy-First** - No tracking, no data selling
+- ✅ **Fully Customizable** - Deep customization without restrictions
+
+### ✨ Features
+
+**Current (v1.0):**
+- 👤 **Profile Management**: Custom avatar, display name, and bio
+- 🔗 **Link Management**: Add, edit, delete, and reorder links with drag & drop
+- 📊 **Analytics Dashboard**: Profile views, link clicks, and engagement metrics
+- 🎨 **Modern UI**: Responsive design with Tailwind CSS and Radix UI
+- 📱 **Share Tools**: One-click copy and social media sharing
+
+**Coming Soon (v2.0+):**
+- 🔐 Authentication & multi-user support
+- 🎨 Theme customization engine
+- 📈 Advanced analytics with geographic & device tracking
+- 💳 Payment integration (Stripe, PayPal)
+- 🛍️ E-commerce features
+- 📧 Email collection & marketing tools
+
+[View all features →](./FEATURES.md) | [See roadmap →](./ROADMAP.md)
+
+### 🛠️ Tech Stack
+- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, Radix UI, TanStack Query, Wouter
+- **Backend**: Express.js (ESM), Drizzle ORM, Zod validation
+- **Database**: PostgreSQL (Neon serverless or self-hosted)
+- **Deployment**: Docker, Railway, Vercel, Render, DigitalOcean
 
 ---
 
@@ -205,9 +240,116 @@ vite.config.ts       # Vite config (client build to dist/public)
 
 ---
 
-## License
+## 📚 Documentation
 
-MIT
+- **[Quick Start Guide](./QUICKSTART.md)** - Get up and running in 10 minutes
+- **[Features List](./FEATURES.md)** - Complete feature overview
+- **[Development Roadmap](./ROADMAP.md)** - Future plans and timeline
+- **[Codebase Analysis](./ANALYSIS.md)** - Technical deep-dive and architecture
+- **[Contributing Guide](./CONTRIBUTING.md)** - How to contribute to the project
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Whether you're fixing bugs, adding features, or improving documentation, your help is appreciated.
+
+**Getting Started:**
+1. Read the [Contributing Guide](./CONTRIBUTING.md)
+2. Check [open issues](../../issues) or [feature requests](../../discussions)
+3. Fork the repository
+4. Create a feature branch
+5. Submit a pull request
+
+**Ways to Contribute:**
+- 🐛 Report bugs
+- 💡 Suggest features
+- 📝 Improve documentation
+- 🔧 Submit code changes
+- 💬 Help others in discussions
+
+---
+
+## 🗺️ Roadmap
+
+### Current Focus (Q1 2025)
+- [ ] User authentication system
+- [ ] Multi-user support
+- [ ] Security hardening
+- [ ] Testing framework
+
+### Upcoming (Q2-Q4 2025)
+- [ ] Theme customization engine
+- [ ] Advanced analytics
+- [ ] Payment integration
+- [ ] E-commerce features
+- [ ] Mobile applications
+
+[View full roadmap →](./ROADMAP.md)
+
+---
+
+## 🌟 Showcase
+
+Using BioLink? We'd love to feature your profile!
+
+- Open a [discussion](../../discussions) with your profile URL
+- Tag us on Twitter with #BioLink
+- Get featured in our showcase gallery
+
+---
+
+## 💬 Community & Support
+
+- **Questions?** Use [GitHub Discussions](../../discussions)
+- **Bug Reports:** [Issue Tracker](../../issues)
+- **Feature Requests:** [Discussions](../../discussions)
+- **Discord:** Coming soon!
+- **Twitter:** [@biolink](#) (Coming soon)
+
+---
+
+## 🏆 Acknowledgments
+
+Built with amazing open-source technologies:
+- [React](https://react.dev) - UI framework
+- [Drizzle ORM](https://orm.drizzle.team) - Database toolkit
+- [Tailwind CSS](https://tailwindcss.com) - Styling
+- [Radix UI](https://www.radix-ui.com) - Accessible components
+- [TanStack Query](https://tanstack.com/query) - Data fetching
+
+---
+
+## 📊 Project Status
+
+![GitHub stars](https://img.shields.io/github/stars/yourusername/biolink?style=social)
+![GitHub forks](https://img.shields.io/github/forks/yourusername/biolink?style=social)
+![GitHub issues](https://img.shields.io/github/issues/yourusername/biolink)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/yourusername/biolink)
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+**In short:** You can use, modify, and distribute this project freely. Attribution is appreciated but not required.
+
+---
+
+## ⭐ Star History
+
+If you find this project useful, please consider giving it a star! It helps us reach more developers and grow the community.
+
+---
+
+<div align="center">
+
+**Made with ❤️ by the open-source community**
+
+[⬆ Back to Top](#biolink--open-source-link-in-bio-platform)
+
+</div>
 
 
 
