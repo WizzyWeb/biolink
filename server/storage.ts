@@ -1,11 +1,16 @@
-import { type Profile, type SocialLink, type InsertProfile, type InsertSocialLink, type UpdateProfile, type UpdateSocialLink, profiles, socialLinks } from "@shared/schema";
+import { type User, type UpsertUser, type Profile, type SocialLink, type InsertProfile, type InsertSocialLink, type UpdateProfile, type UpdateSocialLink, users, profiles, socialLinks } from "@shared/schema";
 import { db } from "./db";
 import { eq, asc, sql } from "drizzle-orm";
 
 export interface IStorage {
+  // User methods (required for Replit Auth)
+  getUser(id: string): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
+  
   // Profile methods
   getProfile(username: string): Promise<Profile | undefined>;
   getProfileById(id: string): Promise<Profile | undefined>;
+  getProfileByUserId(userId: string): Promise<Profile | undefined>;
   createProfile(profile: InsertProfile): Promise<Profile>;
   updateProfile(id: string, updates: Partial<UpdateProfile>): Promise<Profile | undefined>;
   incrementProfileViews(id: string): Promise<void>;
@@ -22,6 +27,28 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
+  // User methods (required for Replit Auth)
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return user;
+  }
+
+  // Profile methods
   async getProfile(username: string): Promise<Profile | undefined> {
     const [profile] = await db.select().from(profiles).where(eq(profiles.username, username));
     return profile || undefined;
@@ -29,6 +56,11 @@ export class DatabaseStorage implements IStorage {
 
   async getProfileById(id: string): Promise<Profile | undefined> {
     const [profile] = await db.select().from(profiles).where(eq(profiles.id, id));
+    return profile || undefined;
+  }
+
+  async getProfileByUserId(userId: string): Promise<Profile | undefined> {
+    const [profile] = await db.select().from(profiles).where(eq(profiles.userId, userId));
     return profile || undefined;
   }
 

@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 import { 
   insertProfileSchema, 
   insertSocialLinkSchema, 
@@ -11,6 +12,26 @@ import {
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Setup authentication
+  await setupAuth(app);
+
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Include profile information with user
+      const profile = await storage.getProfileByUserId(userId);
+      res.json({ ...user, profile });
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
   // Get profile by username
   app.get("/api/profile/:username", async (req, res) => {
     try {
@@ -32,17 +53,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update profile
-  app.patch("/api/profile/:id", async (req, res) => {
+  // Update profile (protected)
+  app.patch("/api/profile/:id", isAuthenticated, async (req: any, res) => {
     try {
       const { id } = req.params;
-      const updates = updateProfileSchema.parse({ id, ...req.body });
+      const userId = req.user.claims.sub;
       
-      const profile = await storage.updateProfile(id, updates);
-      
-      if (!profile) {
+      // Check ownership
+      const existingProfile = await storage.getProfileById(id);
+      if (!existingProfile) {
         return res.status(404).json({ message: "Profile not found" });
       }
+      
+      if (existingProfile.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden: You can only edit your own profile" });
+      }
+      
+      const updates = updateProfileSchema.parse({ id, ...req.body });
+      const profile = await storage.updateProfile(id, updates);
       
       res.json(profile);
     } catch (error) {
@@ -53,10 +81,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create social link
-  app.post("/api/links", async (req, res) => {
+  // Create social link (protected)
+  app.post("/api/links", isAuthenticated, async (req: any, res) => {
     try {
+      const userId = req.user.claims.sub;
       const linkData = insertSocialLinkSchema.parse(req.body);
+      
+      // Check ownership of the profile
+      const profile = await storage.getProfileById(linkData.profileId);
+      if (!profile || profile.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden: You can only add links to your own profile" });
+      }
+      
       const link = await storage.createSocialLink(linkData);
       res.status(201).json(link);
     } catch (error) {
@@ -67,17 +103,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update social link
-  app.patch("/api/links/:id", async (req, res) => {
+  // Update social link (protected)
+  app.patch("/api/links/:id", isAuthenticated, async (req: any, res) => {
     try {
       const { id } = req.params;
-      const updates = updateSocialLinkSchema.parse({ id, ...req.body });
+      const userId = req.user.claims.sub;
       
-      const link = await storage.updateSocialLink(id, updates);
-      
-      if (!link) {
+      // Check ownership
+      const existingLink = await storage.getSocialLink(id);
+      if (!existingLink) {
         return res.status(404).json({ message: "Link not found" });
       }
+      
+      const profile = await storage.getProfileById(existingLink.profileId);
+      if (!profile || profile.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden: You can only edit your own links" });
+      }
+      
+      const updates = updateSocialLinkSchema.parse({ id, ...req.body });
+      const link = await storage.updateSocialLink(id, updates);
       
       res.json(link);
     } catch (error) {
@@ -88,26 +132,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Delete social link
-  app.delete("/api/links/:id", async (req, res) => {
+  // Delete social link (protected)
+  app.delete("/api/links/:id", isAuthenticated, async (req: any, res) => {
     try {
       const { id } = req.params;
-      const deleted = await storage.deleteSocialLink(id);
+      const userId = req.user.claims.sub;
       
-      if (!deleted) {
+      // Check ownership
+      const existingLink = await storage.getSocialLink(id);
+      if (!existingLink) {
         return res.status(404).json({ message: "Link not found" });
       }
       
+      const profile = await storage.getProfileById(existingLink.profileId);
+      if (!profile || profile.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden: You can only delete your own links" });
+      }
+      
+      const deleted = await storage.deleteSocialLink(id);
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });
     }
   });
 
-  // Reorder social links
-  app.patch("/api/links/reorder", async (req, res) => {
+  // Reorder social links (protected)
+  app.patch("/api/links/reorder", isAuthenticated, async (req: any, res) => {
     try {
+      const userId = req.user.claims.sub;
       const { linkIds } = reorderLinksSchema.parse(req.body);
+      
+      // Check ownership of all links
+      if (linkIds.length > 0) {
+        const firstLink = await storage.getSocialLink(linkIds[0]);
+        if (firstLink) {
+          const profile = await storage.getProfileById(firstLink.profileId);
+          if (!profile || profile.userId !== userId) {
+            return res.status(403).json({ message: "Forbidden: You can only reorder your own links" });
+          }
+        }
+      }
+      
       await storage.reorderSocialLinks(linkIds);
       res.status(200).json({ message: "Links reordered successfully" });
     } catch (error) {
