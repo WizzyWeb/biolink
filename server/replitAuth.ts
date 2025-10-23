@@ -22,6 +22,13 @@ const getOidcConfig = memoize(
   { maxAge: 3600 * 1000 }
 );
 
+/**
+ * Creates Express session middleware backed by a PostgreSQL store with a one-week session TTL.
+ *
+ * Uses DATABASE_URL for the PostgreSQL connection and SESSION_SECRET to sign session cookies. The middleware is configured with httpOnly and secure cookies, a maxAge of one week, and resave/saveUninitialized disabled.
+ *
+ * @returns An Express-compatible session middleware configured with a PostgreSQL-backed store and cookies set to httpOnly, secure, and a one-week maxAge.
+ */
 export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   const pgStore = connectPg(session);
@@ -44,6 +51,12 @@ export function getSession() {
   });
 }
 
+/**
+ * Populates a session user object with identity claims and token credentials.
+ *
+ * @param user - Session user object to update; will be mutated with `claims`, `access_token`, `refresh_token`, and `expires_at`.
+ * @param tokens - Token response providing `claims()`, `access_token`, and `refresh_token`.
+ */
 function updateUserSession(
   user: any,
   tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers
@@ -54,6 +67,15 @@ function updateUserSession(
   user.expires_at = user.claims?.exp;
 }
 
+/**
+ * Creates or updates a user record from OpenID Connect claims and ensures the user has a profile.
+ *
+ * If no profile exists for the upserted user, a profile is created with a username derived from the email
+ * (or a fallback based on the subject), a display name from the first name or email, a default bio, and the
+ * provided profile image URL.
+ *
+ * @param claims - OIDC token claims; expected keys include `sub` (user id), `email`, `first_name`, `last_name`, and `profile_image_url`.
+ */
 async function upsertUser(
   claims: any,
 ) {
@@ -79,6 +101,18 @@ async function upsertUser(
   }
 }
 
+/**
+ * Configures an Express application with Replit OpenID Connect authentication.
+ *
+ * Installs session and Passport middleware, discovers OIDC configuration, registers a named Passport strategy for each domain in `REPLIT_DOMAINS`, and mounts authentication routes:
+ * - GET /api/login — starts domain-specific OIDC login
+ * - GET /api/callback — handles the OIDC callback and redirects on success or failure
+ * - GET /api/logout — logs out and redirects to the provider's end-session URL
+ *
+ * The strategy verification stores token claims and tokens on the session and upserts the user record (using `upsertUser` and `updateUserSession`). Uses `REPLIT_DOMAINS` and `REPL_ID` environment variables to build strategy names, callback URLs, and end-session redirects.
+ *
+ * @param app - The Express application to configure for authentication
+ */
 export async function setupAuth(app: Express) {
   app.set("trust proxy", 1);
   app.use(getSession());

@@ -12,6 +12,14 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 
+/**
+ * Register authentication and API routes on the given Express app and create an HTTP server.
+ *
+ * Sets up authentication, mounts auth and profile/link/analytics endpoints (with appropriate
+ * validation and ownership checks), and returns an HTTP server created from the app.
+ *
+ * @returns An HTTP Server instance wrapping the configured Express app
+ */
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication
   await setupAuth(app);

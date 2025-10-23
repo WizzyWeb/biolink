@@ -103,6 +103,16 @@ export interface SendEmailOptions {
   html: string;
 }
 
+/**
+ * Send an email using the configured SMTP transporter and the standard HTML template.
+ *
+ * If SMTP credentials are not configured, the function logs the email details and returns an error result.
+ *
+ * @param to - Recipient email address
+ * @param subject - Email subject line
+ * @param html - HTML content to embed into the email body (will be wrapped with the standard email template)
+ * @returns An object with `success: true` and `messageId` on success, or `success: false` and `error` describing the failure
+ */
 export async function sendEmail({ to, subject, html }: SendEmailOptions) {
   try {
     // Check if SMTP is configured
@@ -129,6 +139,13 @@ export async function sendEmail({ to, subject, html }: SendEmailOptions) {
   }
 }
 
+/**
+ * Sends a verification email containing a tokenized verification link to the given address.
+ *
+ * @param email - Recipient email address
+ * @param token - One-time verification token included in the link
+ * @returns An object with `success: true` and `messageId` when the message is sent, or `success: false` and an `error` string on failure
+ */
 export async function sendVerificationEmail(email: string, token: string) {
   const verificationUrl = `${APP_URL}/verify-email?token=${token}`;
   
@@ -152,6 +169,13 @@ export async function sendVerificationEmail(email: string, token: string) {
   });
 }
 
+/**
+ * Sends a password reset email to the specified address containing a link that expires in one hour.
+ *
+ * @param email - Recipient email address
+ * @param token - Single-use token appended to the reset URL
+ * @returns An object with `success: true` and `messageId` when the email was sent, or `success: false` and `error` when sending failed
+ */
 export async function sendPasswordResetEmail(email: string, token: string) {
   const resetUrl = `${APP_URL}/reset-password?token=${token}`;
   
@@ -175,6 +199,11 @@ export async function sendPasswordResetEmail(email: string, token: string) {
   });
 }
 
+/**
+ * Sends a welcome email to a new user containing their profile URL and a link to the dashboard.
+ *
+ * @returns `{ success: true, messageId?: string }` on successful send; `{ success: false, error: string }` on failure.
+ */
 export async function sendWelcomeEmail(email: string, username: string) {
   const profileUrl = `${APP_URL}/${username}`;
   
