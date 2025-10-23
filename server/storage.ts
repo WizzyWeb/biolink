@@ -1,11 +1,23 @@
-import { type Profile, type SocialLink, type InsertProfile, type InsertSocialLink, type UpdateProfile, type UpdateSocialLink, profiles, socialLinks } from "@shared/schema";
+import { type User, type UpsertUser, type Profile, type SocialLink, type InsertProfile, type InsertSocialLink, type UpdateProfile, type UpdateSocialLink, users, profiles, socialLinks } from "@shared/schema";
 import { db } from "./db";
 import { eq, asc, sql } from "drizzle-orm";
 
 export interface IStorage {
+  // User methods
+  getUser(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createUser(user: UpsertUser): Promise<User>;
+  upsertUser(user: UpsertUser): Promise<User>;
+  updateUser(id: string, updates: Partial<User>): Promise<User | undefined>;
+  updateUserVerificationToken(id: string, token: string | null, expires: Date | null): Promise<void>;
+  updateUserPasswordResetToken(id: string, token: string | null, expires: Date | null): Promise<void>;
+  getUserByVerificationToken(token: string): Promise<User | undefined>;
+  getUserByPasswordResetToken(token: string): Promise<User | undefined>;
+  
   // Profile methods
   getProfile(username: string): Promise<Profile | undefined>;
   getProfileById(id: string): Promise<Profile | undefined>;
+  getProfileByUserId(userId: string): Promise<Profile | undefined>;
   createProfile(profile: InsertProfile): Promise<Profile>;
   updateProfile(id: string, updates: Partial<UpdateProfile>): Promise<Profile | undefined>;
   incrementProfileViews(id: string): Promise<void>;
@@ -22,6 +34,91 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
+  // User methods
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async createUser(userData: UpsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .returning();
+    return user;
+  }
+
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return user;
+  }
+
+  async updateUser(id: string, updates: Partial<User>): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, id))
+      .returning();
+    return user || undefined;
+  }
+
+  async updateUserVerificationToken(id: string, token: string | null, expires: Date | null): Promise<void> {
+    await db
+      .update(users)
+      .set({
+        emailVerificationToken: token,
+        emailVerificationExpires: expires,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, id));
+  }
+
+  async updateUserPasswordResetToken(id: string, token: string | null, expires: Date | null): Promise<void> {
+    await db
+      .update(users)
+      .set({
+        passwordResetToken: token,
+        passwordResetExpires: expires,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, id));
+  }
+
+  async getUserByVerificationToken(token: string): Promise<User | undefined> {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.emailVerificationToken, token));
+    return user || undefined;
+  }
+
+  async getUserByPasswordResetToken(token: string): Promise<User | undefined> {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.passwordResetToken, token));
+    return user || undefined;
+  }
+
+  // Profile methods
   async getProfile(username: string): Promise<Profile | undefined> {
     const [profile] = await db.select().from(profiles).where(eq(profiles.username, username));
     return profile || undefined;
@@ -29,6 +126,11 @@ export class DatabaseStorage implements IStorage {
 
   async getProfileById(id: string): Promise<Profile | undefined> {
     const [profile] = await db.select().from(profiles).where(eq(profiles.id, id));
+    return profile || undefined;
+  }
+
+  async getProfileByUserId(userId: string): Promise<Profile | undefined> {
+    const [profile] = await db.select().from(profiles).where(eq(profiles.userId, userId));
     return profile || undefined;
   }
 
