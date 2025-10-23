@@ -9,7 +9,7 @@ export default function Landing() {
     if (isAuthenticated) {
       window.location.href = "/dashboard";
     } else {
-      window.location.href = "/api/login";
+      window.location.href = "/register";
     }
   };
 
@@ -44,13 +44,23 @@ export default function Landing() {
                 Dashboard
               </Button>
             ) : (
-              <Button
-                onClick={() => window.location.href = "/api/login"}
-                className="bg-primary hover:bg-primary-light text-white px-6 py-2 rounded-full font-semibold"
-                data-testid="button-login-header"
-              >
-                Log In
-              </Button>
+              <>
+                <Button
+                  onClick={() => window.location.href = "/login"}
+                  variant="ghost"
+                  className="text-gray-700 hover:text-charcoal px-6 py-2 font-semibold"
+                  data-testid="button-login-header"
+                >
+                  Log In
+                </Button>
+                <Button
+                  onClick={() => window.location.href = "/register"}
+                  className="bg-primary hover:bg-primary-light text-white px-6 py-2 rounded-full font-semibold"
+                  data-testid="button-signup-header"
+                >
+                  Sign Up
+                </Button>
+              </>
             )}
           </div>
         </div>
