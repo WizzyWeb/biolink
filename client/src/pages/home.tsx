@@ -1,13 +1,10 @@
-import { useState, useEffect } from "react";
-import { useParams, Link, useLocation } from "wouter";
+import { useState } from "react";
+import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Edit, Eye, BarChart3 } from "lucide-react";
+import { LogIn } from "lucide-react";
 import ProfileSection from "@/components/profile-section";
 import SocialLinksList from "@/components/social-links-list";
-import AddLinkModal from "@/components/add-link-modal";
-import EditProfileModal from "@/components/edit-profile-modal";
-import EditLinkModal from "@/components/edit-link-modal";
 import { type Profile, type SocialLink } from "@shared/schema";
 
 interface ProfileData {
@@ -15,33 +12,32 @@ interface ProfileData {
   links: SocialLink[];
 }
 
+/**
+ * Renders the public profile page for the given route username, showing profile details, social links, and share controls.
+ *
+ * The component fetches the profile data for the username from the API, shows a loading skeleton while fetching,
+ * displays a not-found message if the profile is missing or an error occurs, and renders the profile, links,
+ * share input/buttons, and a visitor login button when data is available.
+ *
+ * Side effects: redirects the browser to "/" if no route username is present; copies the profile URL to the clipboard
+ * when the copy button is used; opens external share windows when social buttons are used.
+ *
+ * @returns The rendered Home page UI for a public profile, or `null` when an immediate redirect is performed.
+ */
 export default function Home() {
   const { username } = useParams<{ username?: string }>();
-  const [location] = useLocation();
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [isAddLinkModalOpen, setIsAddLinkModalOpen] = useState(false);
-  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
-  const [isEditLinkModalOpen, setIsEditLinkModalOpen] = useState(false);
-  const [selectedLink, setSelectedLink] = useState<SocialLink | null>(null);
-  const [canEdit, setCanEdit] = useState(false);
 
-  const profileUsername = username || "shivam";
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const editParam = urlParams.get('edit');
-    const hasPermission = editParam === 'shivam';
-    setCanEdit(hasPermission);
-    
-    if (!hasPermission) {
-      setIsEditMode(false);
-    }
-  }, [location]);
+  const profileUsername = username;
 
   const { data, isLoading, error } = useQuery<ProfileData>({
     queryKey: ["/api/profile", profileUsername],
-    enabled: !!profileUsername,
+    enabled: !!profileUsername && profileUsername !== undefined,
   });
+
+  if (!profileUsername) {
+    window.location.href = "/";
+    return null;
+  }
 
   const handleCopyShareUrl = async () => {
     const shareUrl = `${window.location.origin}/${profileUsername}`;
@@ -68,11 +64,6 @@ export default function Home() {
     if (url) {
       window.open(url, "_blank");
     }
-  };
-
-  const handleEditLink = (link: SocialLink) => {
-    setSelectedLink(link);
-    setIsEditLinkModalOpen(true);
   };
 
   if (isLoading) {
@@ -108,66 +99,31 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen py-8 px-4">
-      {/* Edit Mode Toggle - Only visible with correct URL parameter */}
-      {canEdit && (
-        <div className="fixed top-5 right-5 z-50">
-          <Button
-            onClick={() => setIsEditMode(!isEditMode)}
-            className={`bg-primary hover:bg-primary-light text-white px-6 py-3 rounded-full shadow-lg font-semibold flex items-center gap-2 ${
-              isEditMode ? "pulse-animation" : ""
-            }`}
-            data-testid="button-edit-mode"
-          >
-            {isEditMode ? <Eye className="w-5 h-5" /> : <Edit className="w-5 h-5" />}
-            <span>{isEditMode ? "View Mode" : "Edit Profile"}</span>
-          </Button>
-        </div>
-      )}
+    <div className="min-h-screen py-8 px-4 bg-gray-50">
+      {/* Login Button for Visitors */}
+      <div className="fixed top-5 right-5 z-50">
+        <Button
+          onClick={() => window.location.href = "/api/login"}
+          className="bg-white hover:bg-gray-100 text-charcoal px-6 py-3 rounded-full shadow-lg font-semibold flex items-center gap-2 border border-gray-200"
+          data-testid="button-login"
+        >
+          <LogIn className="w-5 h-5" />
+          <span>Create Your Own</span>
+        </Button>
+      </div>
 
       <div className="max-w-2xl mx-auto">
         <ProfileSection
           profile={data.profile}
-          isEditMode={isEditMode}
-          onEditProfile={() => setIsEditProfileModalOpen(true)}
+          isEditMode={false}
+          onEditProfile={() => {}}
         />
-
-        {/* Admin Controls */}
-        {isEditMode && (
-          <div className="mb-6">
-            <div className="bg-white rounded-card shadow-lg p-6">
-              <h3 className="text-xl font-display font-bold text-charcoal mb-4 flex items-center gap-2">
-                <Edit className="w-5 h-5 text-primary" />
-                Link Management
-              </h3>
-              <div className="space-y-3">
-                <Button
-                  onClick={() => setIsAddLinkModalOpen(true)}
-                  className="w-full bg-primary hover:bg-primary-light text-white px-6 py-4 rounded-card font-semibold flex items-center justify-center gap-3 shadow-md hover:shadow-lg"
-                  data-testid="button-add-link"
-                >
-                  <span className="text-xl">+</span>
-                  <span>Add New Link</span>
-                </Button>
-                <Link href={`/analytics/${data.profile.id}`}>
-                  <Button
-                    className="w-full bg-secondary hover:bg-secondary/90 text-white px-6 py-4 rounded-card font-semibold flex items-center justify-center gap-3 shadow-md hover:shadow-lg"
-                    data-testid="button-analytics"
-                  >
-                    <BarChart3 className="w-5 h-5" />
-                    <span>View Analytics</span>
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        )}
 
         <SocialLinksList 
           links={data.links} 
-          isEditMode={isEditMode}
+          isEditMode={false}
           profileId={data.profile.id}
-          onEditLink={handleEditLink}
+          onEditLink={() => {}}
         />
 
         {/* Share Section */}
@@ -226,30 +182,18 @@ export default function Home() {
 
         {/* Footer */}
         <div className="mt-8 text-center">
-          <p className="text-charcoal font-sans text-sm mb-2">
-            Powered by <span className="font-semibold text-primary">LinkHub</span>
+          <p className="text-gray-600 font-sans text-sm mb-2">
+            Powered by <span className="font-semibold text-primary">LinkHub</span> - Free & Open Source
           </p>
+          <Button
+            onClick={() => window.location.href = "/"}
+            variant="link"
+            className="text-primary hover:text-primary-light"
+          >
+            Create Your Own Profile
+          </Button>
         </div>
       </div>
-
-      {/* Modals */}
-      <AddLinkModal
-        isOpen={isAddLinkModalOpen}
-        onClose={() => setIsAddLinkModalOpen(false)}
-        profileId={data.profile.id}
-      />
-
-      <EditProfileModal
-        isOpen={isEditProfileModalOpen}
-        onClose={() => setIsEditProfileModalOpen(false)}
-        profile={data.profile}
-      />
-
-      <EditLinkModal
-        isOpen={isEditLinkModalOpen}
-        onClose={() => setIsEditLinkModalOpen(false)}
-        link={selectedLink}
-      />
     </div>
   );
 }
