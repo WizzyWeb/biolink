@@ -1,25 +1,41 @@
-import { useState } from "react";
-import { Link } from "wouter";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Link as LinkIcon, Mail, Lock, User, CheckCircle2 } from "lucide-react";
+import { Link as LinkIcon, Lock, CheckCircle2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
-export default function Register() {
-  const [email, setEmail] = useState("");
+export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [token, setToken] = useState("");
   const { toast } = useToast();
+  const [location] = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tokenParam = params.get("token");
+    if (tokenParam) {
+      setToken(tokenParam);
+    }
+  }, [location]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!token) {
+      toast({
+        title: "Invalid link",
+        description: "This password reset link is invalid",
+        variant: "destructive",
+      });
+      return;
+    }
 
     if (password !== confirmPassword) {
       toast({
@@ -42,24 +58,18 @@ export default function Register() {
     setIsLoading(true);
 
     try {
-      const response = await apiRequest("POST", "/api/auth/register", { 
-        email, 
-        password, 
-        firstName, 
-        lastName 
+      const response = await apiRequest("POST", "/api/auth/reset-password", {
+        token,
+        newPassword: password,
       });
 
       if (response.ok) {
         setIsSuccess(true);
-        toast({
-          title: "Registration successful!",
-          description: "Please check your email to verify your account.",
-        });
       } else {
         const error = await response.json();
         toast({
-          title: "Registration failed",
-          description: error.error || "An error occurred during registration",
+          title: "Password reset failed",
+          description: error.error || "Invalid or expired reset token",
           variant: "destructive",
         });
       }
@@ -84,23 +94,16 @@ export default function Register() {
                 <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto" />
               </div>
               <h2 className="text-2xl font-display font-bold text-charcoal mb-2">
-                Check your email!
+                Password reset successful!
               </h2>
               <p className="text-gray-600 mb-6">
-                We've sent a verification link to <strong>{email}</strong>. Click the link in the email to verify your account and get started.
+                Your password has been successfully reset. You can now log in with your new password.
               </p>
-              <div className="space-y-3">
-                <Link href="/login">
-                  <Button className="w-full bg-primary hover:bg-primary-light">
-                    Go to Login
-                  </Button>
-                </Link>
-                <Link href="/">
-                  <Button variant="outline" className="w-full">
-                    Back to Home
-                  </Button>
-                </Link>
-              </div>
+              <Link href="/login">
+                <Button className="w-full bg-primary hover:bg-primary-light">
+                  Go to Login
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         </div>
@@ -119,66 +122,20 @@ export default function Register() {
               <span className="text-3xl font-display font-bold text-charcoal">LinkHub</span>
             </a>
           </Link>
-          <p className="text-gray-600">Create your free account to get started.</p>
+          <p className="text-gray-600">Create a new password for your account</p>
         </div>
 
         <Card className="shadow-xl border-gray-200">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-display font-bold">Create Account</CardTitle>
+            <CardTitle className="text-2xl font-display font-bold">Reset Password</CardTitle>
             <CardDescription>
-              Sign up to create your personalized link-in-bio page
+              Enter your new password below
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name</Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                    <Input
-                      id="firstName"
-                      type="text"
-                      placeholder="John"
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      className="pl-10"
-                      data-testid="input-first-name"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name</Label>
-                  <Input
-                    id="lastName"
-                    type="text"
-                    placeholder="Doe"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    data-testid="input-last-name"
-                  />
-                </div>
-              </div>
-
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="pl-10"
-                    data-testid="input-email"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">New Password</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                   <Input
@@ -196,7 +153,7 @@ export default function Register() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">Confirm New Password</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                   <Input
@@ -215,41 +172,15 @@ export default function Register() {
               <Button
                 type="submit"
                 className="w-full bg-primary hover:bg-primary-light text-white font-semibold py-3"
-                disabled={isLoading}
-                data-testid="button-register"
+                disabled={isLoading || !token}
+                data-testid="button-submit"
               >
-                {isLoading ? "Creating account..." : "Create Account"}
+                {isLoading ? "Resetting password..." : "Reset Password"}
               </Button>
             </form>
 
-            <div className="mt-6">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-200"></div>
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-4 bg-white text-gray-500">Or continue with</span>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => window.location.href = "/api/login"}
-                  data-testid="button-replit-auth"
-                >
-                  <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
-                  </svg>
-                  Continue with Replit Auth
-                </Button>
-              </div>
-            </div>
-
             <div className="mt-6 text-center text-sm text-gray-600">
-              Already have an account?{" "}
+              Remember your password?{" "}
               <Link href="/login">
                 <a className="text-primary hover:text-primary-light font-semibold transition-colors">
                   Log in

@@ -21,12 +21,8 @@ export default function Login() {
     setNeedsVerification(false);
 
     try {
-      const response = await apiRequest("/api/auth/login", {
-        method: "POST",
-        body: JSON.stringify({ email, password }),
-        headers: { "Content-Type": "application/json" },
-      });
-
+      const response = await apiRequest("POST", "/api/auth/login", { email, password });
+      
       if (response.ok) {
         const data = await response.json();
         toast({
@@ -60,11 +56,7 @@ export default function Login() {
 
   const handleResendVerification = async () => {
     try {
-      await apiRequest("/api/auth/resend-verification", {
-        method: "POST",
-        body: JSON.stringify({ email }),
-        headers: { "Content-Type": "application/json" },
-      });
+      await apiRequest("POST", "/api/auth/resend-verification", { email });
 
       toast({
         title: "Verification email sent",
