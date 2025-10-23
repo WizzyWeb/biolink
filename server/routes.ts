@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import authRoutes from "./auth";
 import { 
   insertProfileSchema, 
   insertSocialLinkSchema, 
@@ -15,7 +16,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication
   await setupAuth(app);
 
-  // Auth routes
+  // Email/password auth routes
+  app.use('/api/auth', authRoutes);
+
+  // Replit Auth routes (keep for backward compatibility)
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;

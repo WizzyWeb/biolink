@@ -4,6 +4,13 @@ import crypto from "crypto";
 import { storage } from "./storage";
 import { sendVerificationEmail, sendPasswordResetEmail, sendWelcomeEmail } from "./email";
 
+// Extend session type
+declare module "express-session" {
+  interface SessionData {
+    userId?: string;
+  }
+}
+
 const router = Router();
 
 // Helper function to generate secure random token
