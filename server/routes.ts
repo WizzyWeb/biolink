@@ -1,7 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import session from "express-session";
+import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
 import authRoutes from "./auth";
 import { 
   insertProfileSchema, 
@@ -12,24 +13,57 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 
-export async function registerRoutes(app: Express): Promise<Server> {
-  // Setup authentication
-  await setupAuth(app);
+// Session configuration
+const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
+const pgStore = connectPg(session);
+const sessionStore = new pgStore({
+  conString: process.env.DATABASE_URL,
+  createTableIfMissing: false,
+  ttl: sessionTtl,
+  tableName: "sessions",
+});
 
+const sessionMiddleware = session({
+  secret: process.env.SESSION_SECRET || "your-secret-key-change-in-production",
+  store: sessionStore,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: sessionTtl,
+  },
+});
+
+// Authentication middleware for email/password sessions
+const isAuthenticated = async (req: any, res: any, next: any) => {
+  if (!req.session?.userId) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+  
+  const user = await storage.getUser(req.session.userId);
+  if (!user) {
+    return res.status(401).json({ error: "User not found" });
+  }
+  
+  req.user = user;
+  next();
+};
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // Setup session middleware
+  app.use(sessionMiddleware);
+  
   // Email/password auth routes
   app.use('/api/auth', authRoutes);
 
-  // Replit Auth routes (keep for backward compatibility)
+  // Get current user (email/password auth)
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
+      const user = req.user;
       
       // Include profile information with user
-      const profile = await storage.getProfileByUserId(userId);
+      const profile = await storage.getProfileByUserId(user.id);
       res.json({ ...user, profile });
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -61,7 +95,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/profile/:id", isAuthenticated, async (req: any, res) => {
     try {
       const { id } = req.params;
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       // Check ownership
       const existingProfile = await storage.getProfileById(id);
@@ -88,7 +122,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create social link (protected)
   app.post("/api/links", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const linkData = insertSocialLinkSchema.parse(req.body);
       
       // Check ownership of the profile
@@ -111,7 +145,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/links/:id", isAuthenticated, async (req: any, res) => {
     try {
       const { id } = req.params;
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       // Check ownership
       const existingLink = await storage.getSocialLink(id);
@@ -140,7 +174,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/links/:id", isAuthenticated, async (req: any, res) => {
     try {
       const { id } = req.params;
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       // Check ownership
       const existingLink = await storage.getSocialLink(id);
@@ -163,7 +197,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Reorder social links (protected)
   app.patch("/api/links/reorder", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { linkIds } = reorderLinksSchema.parse(req.body);
       
       // Check ownership of ALL links (not just the first one!)

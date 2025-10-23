@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { LogOut, Eye, Settings, Link as LinkIcon, BarChart3 } from "lucide-react";
 import { Link } from "wouter";
@@ -34,7 +35,7 @@ export default function Dashboard() {
         variant: "destructive",
       });
       setTimeout(() => {
-        window.location.href = "/api/login";
+        window.location.href = "/login";
       }, 500);
     }
   }, [isAuthenticated, isLoading, toast]);
@@ -44,8 +45,28 @@ export default function Dashboard() {
     enabled: !!user?.profile?.username,
   });
 
-  const handleLogout = () => {
-    window.location.href = "/api/logout";
+  const handleLogout = async () => {
+    try {
+      const response = await apiRequest("POST", "/api/auth/logout");
+      if (response.ok) {
+        // Clear any cached data
+        queryClient.clear();
+        // Redirect to home page
+        window.location.href = "/";
+      } else {
+        toast({
+          title: "Logout failed",
+          description: "There was an error logging out. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Logout failed",
+        description: "There was an error logging out. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleEditLink = (link: SocialLink) => {

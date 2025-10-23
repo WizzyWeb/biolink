@@ -91,7 +91,7 @@ export default function Home() {
       {/* Login Button for Visitors */}
       <div className="fixed top-5 right-5 z-50">
         <Button
-          onClick={() => window.location.href = "/api/login"}
+          onClick={() => window.location.href = "/login"}
           className="bg-white hover:bg-gray-100 text-charcoal px-6 py-3 rounded-full shadow-lg font-semibold flex items-center gap-2 border border-gray-200"
           data-testid="button-login"
         >
@@ -122,6 +122,7 @@ export default function Home() {
               <input
                 type="text"
                 value={`${window.location.origin}/${profileUsername}`}
+                aria-label="Profile URL"
                 readOnly
                 className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-card font-sans text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary"
                 data-testid="input-share-url"
