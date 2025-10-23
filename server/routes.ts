@@ -162,11 +162,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.claims.sub;
       const { linkIds } = reorderLinksSchema.parse(req.body);
       
-      // Check ownership of all links
+      // Check ownership of ALL links (not just the first one!)
       if (linkIds.length > 0) {
-        const firstLink = await storage.getSocialLink(linkIds[0]);
-        if (firstLink) {
-          const profile = await storage.getProfileById(firstLink.profileId);
+        for (const linkId of linkIds) {
+          const link = await storage.getSocialLink(linkId);
+          if (!link) {
+            return res.status(404).json({ message: `Link ${linkId} not found` });
+          }
+          
+          const profile = await storage.getProfileById(link.profileId);
           if (!profile || profile.userId !== userId) {
             return res.status(403).json({ message: "Forbidden: You can only reorder your own links" });
           }
