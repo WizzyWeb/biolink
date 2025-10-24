@@ -132,11 +132,31 @@ router.post("/login", async (req: Request, res: Response) => {
     // Set user session
     if (req.session) {
       req.session.userId = user.id;
+      
+      // Debug logging for production issues
+      if (process.env.NODE_ENV === "production") {
+        console.log("Login debug:", {
+          sessionId: req.session.id,
+          userId: user.id,
+          sessionSecret: !!process.env.SESSION_SECRET,
+          cookieSecure: process.env.NODE_ENV === "production" && process.env.FORCE_HTTPS !== "false"
+        });
+      }
+      
       req.session.save((err) => {
         if (err) {
           console.error("Session save error:", err);
           return res.status(500).json({ error: "Failed to create session" });
         }
+        
+        // Set cookie explicitly for debugging
+        if (process.env.NODE_ENV === "production") {
+          console.log("Session saved successfully:", {
+            sessionId: req.session.id,
+            userId: req.session.userId
+          });
+        }
+        
         res.json({
           message: "Login successful",
           user: {
