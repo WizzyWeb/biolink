@@ -112,7 +112,7 @@ export default function Dashboard() {
             <Link href="/">
               <a className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                 <LinkIcon className="w-6 h-6 text-primary" />
-                <span className="text-xl font-display font-bold text-charcoal">LinkHub</span>
+                <span className="text-xl font-display font-bold text-charcoal">LinkBoard</span>
               </a>
             </Link>
             <div className="hidden md:flex items-center gap-4">

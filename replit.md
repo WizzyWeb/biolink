@@ -1,8 +1,8 @@
-# LinkHub - Social Links Profile Platform
+# LinkBoard - Social Links Profile Platform
 
 ## Overview
 
-LinkHub is a full-stack web application that enables users to create personalized landing pages with social media links and profile information. Built with React, Express, and PostgreSQL, it provides a "link in bio" solution where users can showcase multiple social media profiles and links through a single shareable URL. The platform tracks engagement metrics including profile views and link clicks, offering users insights into their audience reach.
+LinkBoard is a full-stack web application that enables users to create personalized landing pages with social media links and profile information. Built with React, Express, and PostgreSQL, it provides a "link in bio" solution where users can showcase multiple social media profiles and links through a single shareable URL. The platform tracks engagement metrics including profile views and link clicks, offering users insights into their audience reach.
 
 ## User Preferences
 

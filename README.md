@@ -1,4 +1,4 @@
-## BioLink — Open Source Link in Bio Platform
+## LinkBoard — Open Source Link in Bio Platform
 
 <div align="center">
 
@@ -9,13 +9,15 @@
 
 **A powerful, privacy-first, self-hostable alternative to Linktree and Bio.fm**
 
+LinkBoard is an open-source, customizable "link in bio" tool that allows you to easily organize and share all your important links in one place. Perfect for social media influencers, creators, or professionals, LinkBoard provides a simple yet powerful way to consolidate your online presence with a visually appealing and user-friendly landing page. Whether you're promoting your portfolio, social accounts, or content, LinkBoard makes sharing your links effortless and stylish.
+
 [Features](#features) • [Quick Start](./docs/QUICKSTART.md) • [Roadmap](./docs/ROADMAP.md) • [Contributing](./docs/CONTRIBUTING.md) • [Demo](#demo)
 
 </div>
 
 ---
 
-### 🎯 Why BioLink?
+### 🎯 Why LinkBoard?
 
 - ✅ **100% Open Source** - Complete transparency and control
 - ✅ **Self-Hosted** - Your data, your rules
@@ -299,10 +301,10 @@ We welcome contributions! Whether you're fixing bugs, adding features, or improv
 
 ## 🌟 Showcase
 
-Using BioLink? We'd love to feature your profile!
+Using LinkBoard? We'd love to feature your profile!
 
 - Open a [discussion](../../discussions) with your profile URL
-- Tag us on Twitter with #BioLink
+- Tag us on Twitter with #LinkBoard
 - Get featured in our showcase gallery
 
 ---
@@ -313,7 +315,7 @@ Using BioLink? We'd love to feature your profile!
 - **Bug Reports:** [Issue Tracker](../../issues)
 - **Feature Requests:** [Discussions](../../discussions)
 - **Discord:** Coming soon!
-- **Twitter:** [@biolink](#) (Coming soon)
+- **Twitter:** [@linkboard](#) (Coming soon)
 
 ---
 
@@ -330,10 +332,10 @@ Built with amazing open-source technologies:
 
 ## 📊 Project Status
 
-![GitHub stars](https://img.shields.io/github/stars/yourusername/biolink?style=social)
-![GitHub forks](https://img.shields.io/github/forks/yourusername/biolink?style=social)
-![GitHub issues](https://img.shields.io/github/issues/yourusername/biolink)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/yourusername/biolink)
+![GitHub stars](https://img.shields.io/github/stars/yourusername/linkboard?style=social)
+![GitHub forks](https://img.shields.io/github/forks/yourusername/linkboard?style=social)
+![GitHub issues](https://img.shields.io/github/issues/yourusername/linkboard)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/yourusername/linkboard)
 
 ---
 

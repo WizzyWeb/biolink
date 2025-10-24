@@ -57,7 +57,7 @@ export default function Home() {
 
   const shareToSocial = (platform: string) => {
     const shareUrl = `${window.location.origin}/${profileUsername}`;
-    const text = `Check out my links on LinkHub!`;
+    const text = `Check out my links on LinkBoard!`;
     
     const urls = {
       facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
@@ -190,7 +190,7 @@ export default function Home() {
         {/* Footer */}
         <div className="mt-8 text-center">
           <p className="font-sans text-sm mb-2 theme-font-body-color">
-            Powered by <span className="font-semibold text-primary">LinkHub</span> - Free & Open Source
+            Powered by <span className="font-semibold text-primary">LinkBoard</span> - Free & Open Source
           </p>
           <Button
             onClick={() => window.location.href = "/"}

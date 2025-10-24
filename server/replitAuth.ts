@@ -95,7 +95,7 @@ async function upsertUser(
       userId: user.id,
       username,
       displayName: claims["first_name"] || claims["email"] || "User",
-      bio: "Welcome to my LinkHub profile!",
+      bio: "Welcome to my LinkBoard profile!",
       profileImageUrl: claims["profile_image_url"],
     });
   }
