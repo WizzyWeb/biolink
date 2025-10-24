@@ -23,13 +23,12 @@ interface ProfileData {
 }
 
 /**
- * Dashboard page that displays and manages the authenticated user's profile, links, and analytics.
+ * Render the authenticated user's dashboard for managing bio pages, profile, links, and analytics.
  *
- * Shows a loading state while authentication or profile data is loading, presents profile settings,
- * quick stats, link management with add/edit modals, and a link to detailed analytics. If the user
- * is not authenticated, displays an unauthorized toast and redirects to /api/login.
+ * Shows appropriate UI for loading states, absence of bio pages or profile data, and provides controls
+ * and modals for creating/editing links, editing the profile, and customizing the theme.
  *
- * @returns The JSX element for the dashboard UI; renders `null` when the user is unauthenticated or missing a profile.
+ * @returns The dashboard JSX element; returns `null` when the user is unauthenticated or when profile data is not available.
  */
 export default function Dashboard() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -318,6 +317,7 @@ export default function Dashboard() {
               profile={data.profile}
               isEditMode={false}
               onEditProfile={() => setIsEditProfileModalOpen(true)}
+              userEmail={user?.email}
             />
           )}
         </div>
