@@ -31,6 +31,12 @@ const sessionStore = new pgStore({
   tableName: "sessions",
 });
 
+// Validate session secret in production
+if (process.env.NODE_ENV === "production" && !process.env.SESSION_SECRET) {
+  console.error("FATAL ERROR: SESSION_SECRET environment variable is required in production");
+  process.exit(1);
+}
+
 const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET || "your-secret-key-change-in-production",
   store: sessionStore,
@@ -39,6 +45,7 @@ const sessionMiddleware = session({
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
+    sameSite: 'lax',
     maxAge: sessionTtl,
   },
 });
