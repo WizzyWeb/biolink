@@ -270,17 +270,28 @@ export class DatabaseStorage implements IStorage {
   }
 
   async activateTheme(themeId: string, profileId: string): Promise<void> {
-    // First, deactivate all themes for this profile
-    await db
-      .update(themes)
-      .set({ isActive: false })
-      .where(eq(themes.profileId, profileId));
+    await db.transaction(async (tx) => {
+      // First, deactivate all themes for this profile and update timestamp
+      await tx
+        .update(themes)
+        .set({ 
+          isActive: false,
+          updatedAt: new Date()
+        })
+        .where(eq(themes.profileId, profileId));
 
-    // Then activate the selected theme
-    await db
-      .update(themes)
-      .set({ isActive: true })
-      .where(eq(themes.id, themeId));
+      // Then activate the selected theme (ensuring it belongs to the profile) and update timestamp
+      await tx
+        .update(themes)
+        .set({ 
+          isActive: true,
+          updatedAt: new Date()
+        })
+        .where(and(
+          eq(themes.id, themeId),
+          eq(themes.profileId, profileId)
+        ));
+    });
   }
 }
 
