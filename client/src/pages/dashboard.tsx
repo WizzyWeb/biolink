@@ -53,6 +53,13 @@ export default function Dashboard() {
     }
   }, [isAuthenticated, isLoading, toast]);
 
+  // Get all bio pages for the user
+  const { data: bioPages = [], isLoading: bioPagesLoading } = useQuery<Profile[]>({
+    queryKey: ["/api/bio-pages"],
+    enabled: !!user?.id,
+  });
+
+  // Get the default profile data if user has profiles
   const { data, isLoading: profileLoading } = useQuery<ProfileData>({
     queryKey: ["/api/profile", user?.profile?.pageName],
     enabled: !!user?.profile?.pageName,
@@ -87,7 +94,7 @@ export default function Dashboard() {
     setIsEditLinkModalOpen(true);
   };
 
-  if (isLoading || profileLoading) {
+  if (isLoading || bioPagesLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -98,12 +105,98 @@ export default function Dashboard() {
     );
   }
 
-  if (!isAuthenticated || !user?.profile || !data) {
+  if (!isAuthenticated) {
     return null;
   }
 
+  // If user has no bio pages, show welcome screen
+  if (bioPages.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
+          <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div className="flex items-center gap-6">
+              <Link href="/">
+                <a className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                  <LinkIcon className="w-6 h-6 text-primary" />
+                  <span className="text-xl font-display font-bold text-charcoal">LinkHub</span>
+                </a>
+              </Link>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-600 hidden md:inline">
+                {user?.email}
+              </span>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden md:inline">Log Out</span>
+              </Button>
+            </div>
+          </div>
+        </header>
+
+        {/* Welcome Content */}
+        <main className="max-w-4xl mx-auto px-4 py-8">
+          <div className="text-center">
+            <h1 className="text-3xl font-display font-bold text-charcoal mb-4">
+              Welcome to LinkHub!
+            </h1>
+            <p className="text-lg text-gray-600 mb-8">
+              Create your first bio page to get started. You can create multiple pages for different purposes.
+            </p>
+            <BioPagesManager userId={user?.id || ""} />
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // If user has bio pages but no current profile data, show bio pages manager
+  if (!data && bioPages.length > 0) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
+          <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div className="flex items-center gap-6">
+              <Link href="/">
+                <a className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                  <LinkIcon className="w-6 h-6 text-primary" />
+                  <span className="text-xl font-display font-bold text-charcoal">LinkHub</span>
+                </a>
+              </Link>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-600 hidden md:inline">
+                {user?.email}
+              </span>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden md:inline">Log Out</span>
+              </Button>
+            </div>
+          </div>
+        </header>
+
+        {/* Bio Pages Management */}
+        <main className="max-w-4xl mx-auto px-4 py-8">
+          <BioPagesManager userId={user?.id || ""} />
+        </main>
+      </div>
+    );
+  }
+
   return (
-    <ThemeProvider profileId={data.profile.id}>
+    <ThemeProvider profileId={data?.profile?.id}>
       <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
@@ -116,7 +209,7 @@ export default function Dashboard() {
               </a>
             </Link>
             <div className="hidden md:flex items-center gap-4">
-              <Link href={`/${user.profile.pageName}`}>
+              <Link href={`/${user?.profile?.pageName}`}>
                 <a className="text-gray-600 hover:text-charcoal transition-colors flex items-center gap-2">
                   <Eye className="w-4 h-4" />
                   <span>View Profile</span>
@@ -126,7 +219,7 @@ export default function Dashboard() {
           </div>
           <div className="flex items-center gap-3">
             <span className="text-sm text-gray-600 hidden md:inline">
-              {user.email}
+              {user?.email}
             </span>
             <Button
               onClick={handleLogout}
@@ -146,7 +239,7 @@ export default function Dashboard() {
         {/* Welcome Banner */}
         <div className="bg-gradient-to-r from-primary to-secondary rounded-card shadow-lg p-6 mb-8 text-white">
           <h1 className="text-2xl md:text-3xl font-display font-bold mb-2">
-            Welcome back, {user.profile.displayName}!
+            Welcome back, {user?.profile?.displayName || user?.email}!
           </h1>
           <p className="opacity-90">
             Manage your links and track your performance from your dashboard.
@@ -173,7 +266,7 @@ export default function Dashboard() {
 
         {/* Bio Pages Management */}
         <div className="bg-white rounded-card shadow-lg p-6 mb-6">
-          <BioPagesManager userId={user.id} />
+          <BioPagesManager userId={user?.id || ""} />
         </div>
 
         {/* Profile Section */}
