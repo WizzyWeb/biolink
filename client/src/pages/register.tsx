@@ -9,11 +9,11 @@ import { Link as LinkIcon, Mail, Lock, User, CheckCircle2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
 /**
- * Render the registration page and handle the client-side registration flow.
+ * Renders the user registration page and manages the client-side registration flow.
  *
- * Manages form state, validates passwords (matching and minimum length), submits registration data to the server, displays success or error toasts, and shows a verification confirmation on successful registration.
+ * Performs client-side validation for matching passwords and minimum length, submits registration data to the server, displays success or error toasts, and conditionally shows a verification confirmation after successful registration.
  *
- * @returns The registration page JSX element.
+ * @returns The registration page UI as a JSX element.
  */
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -229,6 +229,31 @@ export default function Register() {
               </Button>
             </form>
 
+            <div className="mt-6">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-4 bg-white text-gray-500">Or continue with</span>
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => window.location.href = "/api/login"}
+                  data-testid="button-replit-auth"
+                >
+                  <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
+                  </svg>
+                  Continue with Replit Auth
+                </Button>
+              </div>
+            </div>
 
             <div className="mt-6 text-center text-sm text-gray-600">
               Already have an account?{" "}
