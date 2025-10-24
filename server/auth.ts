@@ -13,17 +13,32 @@ declare module "express-session" {
 
 const router = Router();
 
-// Helper function to generate secure random token
+/**
+ * Create a cryptographically secure random hex token.
+ *
+ * @returns A 64-character hexadecimal string produced from 32 bytes of cryptographic randomness
+ */
 function generateToken(): string {
   return crypto.randomBytes(32).toString("hex");
 }
 
-// Helper function to hash password
+/**
+ * Produces a bcrypt hash of the provided plaintext password.
+ *
+ * @param password - The plaintext password to hash
+ * @returns The bcrypt hash of `password`
+ */
 async function hashPassword(password: string): Promise<string> {
   return await bcrypt.hash(password, 10);
 }
 
-// Helper function to verify password
+/**
+ * Check whether a plaintext password matches a bcrypt password hash.
+ *
+ * @param password - The plaintext password to verify
+ * @param hashedPassword - The bcrypt-generated hashed password to compare against
+ * @returns `true` if the plaintext password matches the hash, `false` otherwise
+ */
 async function verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
   return await bcrypt.compare(password, hashedPassword);
 }

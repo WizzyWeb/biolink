@@ -8,6 +8,13 @@ import { useToast } from "@/hooks/use-toast";
 import { Link as LinkIcon, Mail, Lock, User, CheckCircle2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
+/**
+ * Renders the user registration page and manages the client-side registration flow.
+ *
+ * Performs client-side validation for matching passwords and minimum length, submits registration data to the server, displays success or error toasts, and conditionally shows a verification confirmation after successful registration.
+ *
+ * @returns The registration page UI as a JSX element.
+ */
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

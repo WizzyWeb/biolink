@@ -8,6 +8,13 @@ import { useToast } from "@/hooks/use-toast";
 import { Link as LinkIcon, Mail, CheckCircle2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
+/**
+ * Render the Forgot Password page and handle sending a password-reset request for an entered email.
+ *
+ * Displays an email input and submit button, posts the email to the password reset endpoint, shows an error toast on failure, and replaces the form with a confirmation view on success.
+ *
+ * @returns A JSX element representing the forgot-password page.
+ */
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
