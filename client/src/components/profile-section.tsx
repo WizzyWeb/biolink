@@ -1,16 +1,34 @@
 import { Button } from "@/components/ui/button";
 import { type Profile } from "@shared/schema";
 import { motion } from "framer-motion";
+import { useGravatar } from "@/hooks/useGravatar";
 
 interface ProfileSectionProps {
   profile: Profile;
   isEditMode: boolean;
   onEditProfile: () => void;
+  userEmail?: string; // Optional user email for Gravatar integration
 }
 
-export default function ProfileSection({ profile, isEditMode, onEditProfile }: ProfileSectionProps) {
+export default function ProfileSection({ profile, isEditMode, onEditProfile, userEmail }: ProfileSectionProps) {
   const fallbackImage =
     "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&h=300";
+
+  // Use Gravatar if user email is available and no custom profile image is set
+  const shouldUseGravatar = userEmail && !profile.profileImageUrl;
+  
+  const { gravatarUrl, isLoading: gravatarLoading } = useGravatar(
+    shouldUseGravatar ? userEmail : null,
+    {
+      size: 128,
+      fallbackUrl: fallbackImage,
+      useInitials: true,
+      name: profile.displayName
+    }
+  );
+
+  // Determine the final image source
+  const imageSrc = profile.profileImageUrl || (shouldUseGravatar ? gravatarUrl : fallbackImage);
 
   return (
     <motion.section
@@ -27,12 +45,16 @@ export default function ProfileSection({ profile, isEditMode, onEditProfile }: P
       >
         <div className="gradient-border">
           <motion.img
-            src={profile.profileImageUrl || fallbackImage}
+            src={imageSrc}
             alt={profile.displayName || "Profile"}
             className="w-32 h-32 object-cover rounded-full"
             data-testid="img-profile"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 300 }}
+            style={{ 
+              opacity: gravatarLoading ? 0.7 : 1,
+              transition: 'opacity 0.3s ease'
+            }}
           />
         </div>
       </motion.div>

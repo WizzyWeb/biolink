@@ -90,13 +90,24 @@ async function upsertUser(
   // Auto-create profile if it doesn't exist
   const existingProfile = await storage.getProfileByUserId(user.id);
   if (!existingProfile) {
-    const username = claims["email"]?.split("@")[0] || `user${claims["sub"]}`;
-    await storage.createProfile({
-      userId: user.id,
-      username,
-      displayName: claims["first_name"] || claims["email"] || "User",
+    const email = claims["email"];
+    const basePageName = email?.split("@")[0]?.toLowerCase().replace(/[^a-z0-9-_]/g, "") || `user${claims["sub"]}`;
+    let pageName = basePageName;
+    let counter = 1;
+    
+    // Ensure pageName is unique
+    while (await storage.getProfileByPageName(pageName)) {
+      pageName = `${basePageName}${counter}`;
+      counter++;
+    }
+    
+    const displayName = claims["first_name"] || email?.split("@")[0] || "User";
+    
+    await storage.createBioPage(user.id, {
+      pageName,
+      displayName,
       bio: "Welcome to my LinkBoard profile!",
-      profileImageUrl: claims["profile_image_url"],
+      profileImageUrl: claims["profile_image_url"] || undefined,
     });
   }
 }

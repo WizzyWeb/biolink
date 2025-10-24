@@ -318,6 +318,7 @@ export default function Dashboard() {
               profile={data.profile}
               isEditMode={false}
               onEditProfile={() => setIsEditProfileModalOpen(true)}
+              userEmail={user?.email}
             />
           )}
         </div>
