@@ -68,11 +68,11 @@ function updateUserSession(
 }
 
 /**
- * Creates or updates a user record from OpenID Connect claims and ensures the user has a profile.
+ * Create or update a user from OpenID Connect claims and ensure the user has a profile.
  *
- * If no profile exists for the upserted user, a profile is created with a username derived from the email
- * (or a fallback based on the subject), a display name from the first name or email, a default bio, and the
- * provided profile image URL.
+ * If the upserted user has no profile, this creates one using a username derived from the email local-part
+ * or a fallback of `user<sub>`, a display name from `first_name` or `email`, a default bio of
+ * "Welcome to my LinkBoard profile!", and the provided profile image URL.
  *
  * @param claims - OIDC token claims; expected keys include `sub` (user id), `email`, `first_name`, `last_name`, and `profile_image_url`.
  */
@@ -95,7 +95,7 @@ async function upsertUser(
       userId: user.id,
       username,
       displayName: claims["first_name"] || claims["email"] || "User",
-      bio: "Welcome to my LinkHub profile!",
+      bio: "Welcome to my LinkBoard profile!",
       profileImageUrl: claims["profile_image_url"],
     });
   }

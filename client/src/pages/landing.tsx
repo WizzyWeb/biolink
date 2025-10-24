@@ -3,12 +3,9 @@ import { Link2, Github, Heart } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 /**
- * Render the application's public landing page with header, hero, features, and footer.
+ * Render the public landing page including header, hero, features, and footer.
  *
- * Uses authentication state from `useAuth` to show a loading indicator while auth is loading
- * and to conditionally render navigation actions: authenticated users can access the dashboard,
- * while unauthenticated users are offered Log In and Sign Up flows. The primary "Get Started"
- * control navigates to the dashboard when authenticated or to the registration page otherwise.
+ * The primary action navigates to the dashboard for authenticated users or to the registration page for unauthenticated users. While authentication state is loading, a centered loading indicator is shown.
  *
  * @returns The landing page JSX element
  */
@@ -34,13 +31,14 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Link2 className="w-8 h-8 text-primary" />
-            <span className="text-2xl font-display font-bold text-charcoal">LinkHub</span>
+            <span className="text-2xl font-display font-bold text-charcoal">LinkBoard</span>
           </div>
           <div className="flex items-center gap-4">
             <a 
-              href="https://github.com" 
+              href="https://github.com/WizzyWeb/biolink" 
               target="_blank" 
               rel="noopener noreferrer"
+              title="View on GitHub"
               className="text-gray-600 hover:text-charcoal transition-colors"
             >
               <Github className="w-6 h-6" />

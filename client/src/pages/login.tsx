@@ -9,11 +9,9 @@ import { Link as LinkIcon, Mail, Lock, AlertCircle } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
 /**
- * Render the login page and manage user authentication and email verification flows.
+ * Renders the login page with email/password authentication, inline email verification resend, and navigation links.
  *
- * Handles form submission (email/password), displays success or error toasts, redirects to the dashboard on successful login, and provides a resend-verification action when email verification is required. Also renders alternate third-party authentication and navigation links (forgot password, sign up, back to home).
- *
- * @returns The component's JSX element representing the login page.
+ * @returns The component's JSX element for the login page.
  */
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -86,7 +84,7 @@ export default function Login() {
           <Link href="/">
             <a className="inline-flex items-center gap-3 mb-2 hover:opacity-80 transition-opacity">
               <LinkIcon className="w-10 h-10 text-primary" />
-              <span className="text-3xl font-display font-bold text-charcoal">LinkHub</span>
+              <span className="text-3xl font-display font-bold text-charcoal">LinkBoard</span>
             </a>
           </Link>
           <p className="text-gray-600">Welcome back! Log in to your account.</p>

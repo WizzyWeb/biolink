@@ -1,30 +1,50 @@
 import { db } from "./db";
-import { profiles, socialLinks } from "@shared/schema";
+import { profiles, socialLinks, users } from "@shared/schema";
 import { eq } from "drizzle-orm";
 
+/**
+ * Populates the database with a demo user, a default "demo" profile, and a set of default social links when no "demo" profile exists.
+ *
+ * If a profile with pageName "demo" already exists the function returns without making changes. Otherwise it creates a demo user, creates a profile associated to that user (marked as default), and inserts a predefined list of social link records for that profile.
+ */
 async function seed() {
   console.log("Seeding database...");
 
   // Check if default profile already exists
-  const existing = await db.select().from(profiles).where(eq(profiles.username, "demo"));
+  const existing = await db.select().from(profiles).where(eq(profiles.pageName, "demo"));
   
   if (existing.length > 0) {
     console.log("Default profile already exists, skipping seed.");
     return;
   }
 
+  // Create a demo user first
+  const [user] = await db
+    .insert(users)
+    .values({
+      email: "demo@example.com",
+      firstName: "Demo",
+      lastName: "User",
+      isEmailVerified: true,
+    })
+    .returning();
+
+  console.log("Created demo user:", user.email);
+
   // Create default profile
   const [profile] = await db
     .insert(profiles)
     .values({
-      username: "demo",
+      userId: user.id,
+      pageName: "demo",
       displayName: "Sarah Mitchell",
       bio: "Digital Creator | UX Designer | Coffee Enthusiast ☕\nSharing my journey through design, tech, and lifestyle",
       profileImageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=300",
+      isDefault: true,
     })
     .returning();
 
-  console.log("Created profile:", profile.username);
+  console.log("Created profile:", profile.pageName);
 
   // Create default links
   const defaultLinks = [

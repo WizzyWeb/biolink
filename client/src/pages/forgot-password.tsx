@@ -9,11 +9,11 @@ import { Link as LinkIcon, Mail, CheckCircle2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
 /**
- * Render the Forgot Password page and handle sending a password-reset request for an entered email.
+ * Render the forgot-password page and manage sending a password-reset request for the entered email.
  *
- * Displays an email input and submit button, posts the email to the password reset endpoint, shows an error toast on failure, and replaces the form with a confirmation view on success.
+ * Displays an email input and submit button, sends a password-reset request for the provided address, shows an error toast on failure, and replaces the form with a confirmation view on success.
  *
- * @returns A JSX element representing the forgot-password page.
+ * @returns The forgot-password page as a JSX element.
  */
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -76,7 +76,7 @@ export default function ForgotPassword() {
           <Link href="/">
             <a className="inline-flex items-center gap-3 mb-2 hover:opacity-80 transition-opacity">
               <LinkIcon className="w-10 h-10 text-primary" />
-              <span className="text-3xl font-display font-bold text-charcoal">LinkHub</span>
+              <span className="text-3xl font-display font-bold text-charcoal">LinkBoard</span>
             </a>
           </Link>
           <p className="text-gray-600">Reset your password</p>

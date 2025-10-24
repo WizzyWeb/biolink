@@ -9,14 +9,9 @@ import { Link as LinkIcon, Lock, CheckCircle2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
 /**
- * Renders the Reset Password page and manages the complete password reset flow.
+ * Render the Reset Password page and handle the password reset flow, including token extraction, input validation, submission, user feedback, and success confirmation.
  *
- * Extracts a reset token from the URL query string, validates the new password
- * and confirmation (including minimum length and matching), submits the token
- * and new password to the backend, shows user-facing toasts for errors, and
- * displays a success confirmation when the reset completes.
- *
- * @returns A React element representing the reset password page UI.
+ * @returns The reset password page UI as a React element.
  */
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
@@ -129,7 +124,7 @@ export default function ResetPassword() {
           <Link href="/">
             <a className="inline-flex items-center gap-3 mb-2 hover:opacity-80 transition-opacity">
               <LinkIcon className="w-10 h-10 text-primary" />
-              <span className="text-3xl font-display font-bold text-charcoal">LinkHub</span>
+              <span className="text-3xl font-display font-bold text-charcoal">LinkBoard</span>
             </a>
           </Link>
           <p className="text-gray-600">Create a new password for your account</p>
