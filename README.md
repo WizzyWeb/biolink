@@ -273,13 +273,13 @@ We welcome contributions! Whether you're fixing bugs, adding features, or improv
 ## 🗺️ Roadmap
 
 ### Current Focus (Q1 2025)
-- [ ] User authentication system
+- [x] User authentication system
 - [ ] Multi-user support
 - [ ] Security hardening
 - [ ] Testing framework
 
 ### Upcoming (Q2-Q4 2025)
-- [ ] Theme customization engine
+- [x] Theme customization engine
 - [ ] Advanced analytics
 - [ ] Payment integration
 - [ ] E-commerce features
