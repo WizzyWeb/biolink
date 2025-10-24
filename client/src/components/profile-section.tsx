@@ -14,7 +14,7 @@ export default function ProfileSection({ profile, isEditMode, onEditProfile }: P
 
   return (
     <motion.section
-      className="profile-card bg-white rounded-card shadow-lg p-8 mb-6 text-center"
+      className="profile-card theme-card theme-spacing-normal mb-6 text-center"
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: "easeOut" }}
@@ -44,14 +44,14 @@ export default function ProfileSection({ profile, isEditMode, onEditProfile }: P
         transition={{ delay: 0.25, duration: 0.4 }}
       >
         <h1
-          className="text-3xl md:text-4xl font-display font-bold text-charcoal break-words"
+          className="text-3xl md:text-4xl theme-font-display font-bold theme-font-display-color"
           data-testid="text-display-name"
         >
           {profile.displayName || "User"}
         </h1>
         {profile.bio && (
           <p
-            className="text-base md:text-lg text-gray-600 font-sans max-w-md mx-auto whitespace-pre-line"
+            className="text-base md:text-lg theme-font-body max-w-md mx-auto whitespace-pre-line theme-font-body-color"
             data-testid="text-bio"
           >
             {profile.bio}
@@ -60,13 +60,23 @@ export default function ProfileSection({ profile, isEditMode, onEditProfile }: P
       </motion.div>
 
       <motion.div
-        className="flex justify-center gap-10 mt-6 pt-6 border-t border-gray-100"
+        className="flex justify-center gap-8 mt-6 pt-6 border-t border-gray-100"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.35, duration: 0.4 }}
       >
-        <Stat value={profile.profileViews} label="Profile Views" testId="text-profile-views" />
-        <Stat value={profile.linkClicks} label="Link Clicks" testId="text-link-clicks" secondary />
+        <div className="text-center">
+          <div className="text-2xl font-display font-bold text-primary" data-testid="text-profile-views">
+            {profile.profileViews?.toLocaleString() || "0"}
+          </div>
+          <div className="text-sm font-sans theme-font-body-color">Profile Views</div>
+        </div>
+        <div className="text-center">
+          <div className="text-2xl font-display font-bold text-secondary" data-testid="text-link-clicks">
+            {profile.linkClicks?.toLocaleString() || "0"}
+          </div>
+          <div className="text-sm font-sans theme-font-body-color">Link Clicks</div>
+        </div>
       </motion.div>
 
       {isEditMode && (
@@ -88,31 +98,5 @@ export default function ProfileSection({ profile, isEditMode, onEditProfile }: P
         </motion.div>
       )}
     </motion.section>
-  );
-}
-
-function Stat({
-  value,
-  label,
-  testId,
-  secondary,
-}: {
-  value?: number;
-  label: string;
-  testId: string;
-  secondary?: boolean;
-}) {
-  return (
-    <div className="text-center">
-      <p
-        className={`text-2xl font-display font-bold ${
-          secondary ? "text-secondary" : "text-primary"
-        }`}
-        data-testid={testId}
-      >
-        {value?.toLocaleString() || "0"}
-      </p>
-      <p className="text-sm text-gray-500 font-sans">{label}</p>
-    </div>
   );
 }

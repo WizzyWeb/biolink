@@ -18,7 +18,7 @@ cp .env.example .env
 # Run with Docker
 docker-compose up -d
 
-# Visit http://localhost:5000
+# Visit http://localhost:3000
 ```
 
 ---
@@ -49,7 +49,7 @@ NODE_ENV=development tsx server/seed.ts
 npm run dev
 ```
 
-Visit `http://localhost:5000/demo` to see the seeded profile.
+Visit `http://localhost:3000/demo` to see the seeded profile.
 
 ---
 
@@ -58,7 +58,7 @@ Visit `http://localhost:5000/demo` to see the seeded profile.
 ### 1. Access Edit Mode
 Add `?edit=shivam` to any profile URL to access edit mode:
 ```
-http://localhost:5000/demo?edit=shivam
+http://localhost:3000/demo?edit=shivam
 ```
 
 ⚠️ **Security Note:** This is a temporary auth mechanism. Replace with proper authentication before production use.
@@ -145,7 +145,7 @@ DATABASE_URL=postgresql://user:password@host:port/database
 
 ### Optional
 ```bash
-PORT=5000                    # Server port (default: 5000)
+PORT=3000                    # Server port (default: 3000)
 NODE_ENV=development        # Environment mode
 ```
 
@@ -243,7 +243,7 @@ services:
   app:
     build: .
     ports:
-      - "5000:5000"
+      - "3000:3000"
     environment:
       DATABASE_URL: postgresql://biolink:biolink@db:5432/biolink
       NODE_ENV: production
@@ -277,7 +277,7 @@ docker build -t biolink .
 
 # Run container
 docker run -d \
-  -p 5000:5000 \
+  -p 3000:3000 \
   -e DATABASE_URL=your_database_url \
   --name biolink \
   biolink
@@ -310,15 +310,15 @@ npm run build
 
 ### Port Already in Use
 
-**Problem:** `Port 5000 already in use`
+**Problem:** `Port 3000 already in use`
 
 **Solution:**
 ```bash
 # Use different port
 PORT=3000 npm run dev
 
-# Or kill process on port 5000
-lsof -ti:5000 | xargs kill -9
+# Or kill process on port 3000
+lsof -ti:3000 | xargs kill -9
 ```
 
 ### Drizzle Migration Issues
@@ -345,7 +345,7 @@ npx drizzle-kit migrate
 ifconfig | grep "inet " | grep -v 127.0.0.1
 
 # Access from phone
-http://YOUR_IP:5000/demo
+http://YOUR_IP:3000/demo
 ```
 
 ### ngrok for Public URL
@@ -354,7 +354,7 @@ http://YOUR_IP:5000/demo
 npm install -g ngrok
 
 # Create tunnel
-ngrok http 5000
+ngrok http 3000
 
 # Use provided URL
 https://abc123.ngrok.io
