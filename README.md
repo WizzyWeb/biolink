@@ -87,7 +87,7 @@ NODE_ENV=development tsx server/seed.ts
 npm run dev
 ```
 
-App will serve API and client from the same process. The port defaults to `5000` (or `process.env.PORT`).
+App will serve API and client from the same process. The port defaults to `3000` (or `process.env.PORT`).
 
 ---
 
@@ -105,7 +105,7 @@ App will serve API and client from the same process. The port defaults to `5000`
 Required:
 
 - `DATABASE_URL` — Postgres connection string (e.g., Neon). The server will exit if it is missing.
-- `PORT` (optional) — Defaults to `5000`.
+- `PORT` (optional) — Defaults to `3000`.
 
 The Drizzle config (`drizzle.config.ts`) also requires `DATABASE_URL` to be set when running migrations.
 
@@ -172,14 +172,14 @@ The production server serves static files from `dist/public` and the API under `
 
 ### Public Profiles
 
-- Visit `/{username}` to view a public profile. The project seeds `demo`, so `http://localhost:5000/demo` should work after seeding.
+- Visit `/{username}` to view a public profile. The project seeds `demo`, so `http://localhost:3000/demo` should work after seeding.
 
 ### Edit Mode (URL‑gated)
 
 - To access edit controls on a profile page, append the query parameter `?edit=true`:
 
 ```
-http://localhost:5000/{username}?edit=true
+http://localhost:3000/{username}?edit=true
 ```
 
 - When present, an Edit toggle appears in the top‑right. Toggle it to switch between View and Edit. In Edit mode you can:

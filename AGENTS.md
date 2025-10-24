@@ -8,7 +8,7 @@
 
 ## Build, Test, and Development Commands
 - `npm install` installs both client and server dependencies in the monorepo workspace.
-- `npm run dev` boots the API (via `tsx server/index.ts`) and proxies the Vite client at `http://localhost:5000`.
+- `npm run dev` boots the API (via `tsx server/index.ts`) and proxies the Vite client at `http://localhost:3000`.
 - `npm run build` outputs the Vite bundle and bundles the API with esbuild into `dist/`.
 - `npm run start` serves the production build from `dist/index.js`.
 - `npm run db:push` syncs Drizzle schema updates to the configured database.

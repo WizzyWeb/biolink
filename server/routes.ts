@@ -16,6 +16,9 @@ import {
 import { presetThemes } from "./presetThemes";
 import { z } from "zod";
 
+// Debug: Check if presetThemes is loaded correctly
+console.log('Preset themes loaded:', presetThemes?.length || 0);
+
 // Session configuration
 const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
 const pgStore = connectPg(session);
@@ -270,6 +273,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get preset themes
   app.get("/api/themes/presets", async (req, res) => {
     try {
+      console.log('Fetching preset themes, count:', presetThemes?.length || 0);
+      console.log('Preset themes type:', Array.isArray(presetThemes) ? 'array' : typeof presetThemes);
+      
+      if (!Array.isArray(presetThemes)) {
+        console.error('presetThemes is not an array:', presetThemes);
+        return res.status(500).json({ message: "Preset themes not loaded correctly" });
+      }
+      
       // Return preset themes with proper structure for the frontend
       const formattedPresets = presetThemes.map((preset, index) => ({
         id: `preset-${index}`,
@@ -280,8 +291,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         layout: preset.layout,
         isPreset: true,
       }));
+      console.log('Formatted presets:', formattedPresets.length);
       res.json(formattedPresets);
     } catch (error) {
+      console.error('Error fetching preset themes:', error);
       res.status(500).json({ message: "Internal server error" });
     }
   });

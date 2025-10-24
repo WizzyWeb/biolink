@@ -42,6 +42,18 @@ const fontOptions = [
   { value: 'Merriweather', label: 'Merriweather' },
 ];
 
+// Import all preset themes from server
+import { presetThemes as serverPresetThemes } from '../../../server/presetThemes';
+
+// Fallback preset themes in case API fails - use all server themes
+const fallbackPresetThemes: PresetTheme[] = serverPresetThemes.map(preset => ({
+  name: preset.name,
+  colors: preset.colors,
+  gradients: preset.gradients,
+  fonts: preset.fonts,
+  layout: preset.layout,
+}));
+
 export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeBuilderModalProps) {
   const { theme, setTheme, updateThemeColors, updateThemeGradients, updateThemeFonts, updateThemeLayout, resetToDefault } = useTheme();
   const { toast } = useToast();
@@ -58,17 +70,22 @@ export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeB
   const fetchPresetThemes = async () => {
     setIsLoading(true);
     try {
+      console.log('Fetching preset themes...');
       const response = await apiRequest('GET', '/api/themes/presets');
+      console.log('Response status:', response.status);
       if (response.ok) {
         const presets = await response.json();
-        setPresetThemes(Array.isArray(presets) ? presets : []);
+        console.log('Received presets from API:', presets.length);
+        setPresetThemes(Array.isArray(presets) && presets.length > 0 ? presets : fallbackPresetThemes);
       } else {
         console.error('Failed to fetch preset themes:', response.statusText);
-        setPresetThemes([]);
+        console.log('Using fallback preset themes:', fallbackPresetThemes.length);
+        setPresetThemes(fallbackPresetThemes);
       }
     } catch (error) {
       console.error('Failed to fetch preset themes:', error);
-      setPresetThemes([]);
+      console.log('Using fallback preset themes:', fallbackPresetThemes.length);
+      setPresetThemes(fallbackPresetThemes);
     } finally {
       setIsLoading(false);
     }
