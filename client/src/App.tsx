@@ -3,6 +3,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import Landing from "@/pages/landing";
 import Login from "@/pages/login";
 import Register from "@/pages/register";
@@ -36,12 +37,19 @@ function Router() {
   );
 }
 
+/**
+ * Renders the application root composed with query, tooltip, and theme providers and includes the Toaster and Router.
+ *
+ * @returns The root React element containing the configured providers and the application UI (Toaster and Router).
+ */
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Router />
+        <ThemeProvider>
+          <Toaster />
+          <Router />
+        </ThemeProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

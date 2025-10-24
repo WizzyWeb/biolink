@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
-import { LogOut, Eye, Settings, Link as LinkIcon, BarChart3 } from "lucide-react";
+import { LogOut, Eye, Settings, Link as LinkIcon, BarChart3, Palette } from "lucide-react";
 import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import ProfileSection from "@/components/profile-section";
@@ -10,6 +11,7 @@ import SocialLinksList from "@/components/social-links-list";
 import AddLinkModal from "@/components/add-link-modal";
 import EditProfileModal from "@/components/edit-profile-modal";
 import EditLinkModal from "@/components/edit-link-modal";
+import ThemeBuilderModal from "@/components/theme-builder-modal";
 import { type Profile, type SocialLink } from "@shared/schema";
 import { useState } from "react";
 
@@ -19,13 +21,14 @@ interface ProfileData {
 }
 
 /**
- * Dashboard page that displays and manages the authenticated user's profile, links, and analytics.
+ * Render the authenticated user's dashboard for managing profile, links, and analytics.
  *
- * Shows a loading state while authentication or profile data is loading, presents profile settings,
- * quick stats, link management with add/edit modals, and a link to detailed analytics. If the user
- * is not authenticated, displays an unauthorized toast and redirects to /api/login.
+ * Displays a loading state while authentication or profile data is loading. If the user is not authenticated,
+ * shows an unauthorized toast and redirects to the login page. When authenticated and profile data is available,
+ * presents quick stats, profile settings (including theme builder and edit profile actions), link management
+ * with add/edit modals, and a link to detailed analytics.
  *
- * @returns The JSX element for the dashboard UI; renders `null` when the user is unauthenticated or missing a profile.
+ * @returns The dashboard JSX element when authenticated with a profile, `null` otherwise.
  */
 export default function Dashboard() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -33,6 +36,7 @@ export default function Dashboard() {
   const [isAddLinkModalOpen, setIsAddLinkModalOpen] = useState(false);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
   const [isEditLinkModalOpen, setIsEditLinkModalOpen] = useState(false);
+  const [isThemeBuilderModalOpen, setIsThemeBuilderModalOpen] = useState(false);
   const [selectedLink, setSelectedLink] = useState<SocialLink | null>(null);
 
   useEffect(() => {
@@ -43,7 +47,7 @@ export default function Dashboard() {
         variant: "destructive",
       });
       setTimeout(() => {
-        window.location.href = "/api/login";
+        window.location.href = "/login";
       }, 500);
     }
   }, [isAuthenticated, isLoading, toast]);
@@ -53,8 +57,28 @@ export default function Dashboard() {
     enabled: !!user?.profile?.username,
   });
 
-  const handleLogout = () => {
-    window.location.href = "/api/logout";
+  const handleLogout = async () => {
+    try {
+      const response = await apiRequest("POST", "/api/auth/logout");
+      if (response.ok) {
+        // Clear any cached data
+        queryClient.clear();
+        // Redirect to home page
+        window.location.href = "/";
+      } else {
+        toast({
+          title: "Logout failed",
+          description: "There was an error logging out. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Logout failed",
+        description: "There was an error logging out. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleEditLink = (link: SocialLink) => {
@@ -152,13 +176,24 @@ export default function Dashboard() {
               <Settings className="w-5 h-5 text-primary" />
               Profile Settings
             </h2>
-            <Button
-              onClick={() => setIsEditProfileModalOpen(true)}
-              className="bg-primary hover:bg-primary-light text-white"
-              data-testid="button-edit-profile"
-            >
-              Edit Profile
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => setIsThemeBuilderModalOpen(true)}
+                variant="outline"
+                className="flex items-center gap-2"
+                data-testid="button-theme-builder"
+              >
+                <Palette className="w-4 h-4" />
+                Customize Theme
+              </Button>
+              <Button
+                onClick={() => setIsEditProfileModalOpen(true)}
+                className="bg-primary hover:bg-primary-light text-white"
+                data-testid="button-edit-profile"
+              >
+                Edit Profile
+              </Button>
+            </div>
           </div>
           {data && (
             <ProfileSection
@@ -226,6 +261,12 @@ export default function Dashboard() {
             isOpen={isEditLinkModalOpen}
             onClose={() => setIsEditLinkModalOpen(false)}
             link={selectedLink}
+          />
+
+          <ThemeBuilderModal
+            isOpen={isThemeBuilderModalOpen}
+            onClose={() => setIsThemeBuilderModalOpen(false)}
+            profileId={data.profile.id}
           />
         </>
       )}

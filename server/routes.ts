@@ -1,43 +1,83 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import session from "express-session";
+import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
 import authRoutes from "./auth";
 import { 
   insertProfileSchema, 
   insertSocialLinkSchema, 
   updateProfileSchema, 
   updateSocialLinkSchema,
-  reorderLinksSchema 
+  reorderLinksSchema,
+  insertThemeSchema,
+  updateThemeSchema
 } from "@shared/schema";
+import { presetThemes } from "./presetThemes";
 import { z } from "zod";
 
+// Debug: Check if presetThemes is loaded correctly
+console.log('Preset themes loaded:', presetThemes?.length || 0);
+console.log('Preset themes is array:', Array.isArray(presetThemes));
+console.log('Preset themes first item:', presetThemes?.[0]);
+
+// Session configuration
+const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
+const pgStore = connectPg(session);
+const sessionStore = new pgStore({
+  conString: process.env.DATABASE_URL,
+  createTableIfMissing: false,
+  ttl: sessionTtl,
+  tableName: "sessions",
+});
+
+const sessionMiddleware = session({
+  secret: process.env.SESSION_SECRET || "your-secret-key-change-in-production",
+  store: sessionStore,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: sessionTtl,
+  },
+});
+
+// Authentication middleware for email/password sessions
+const isAuthenticated = async (req: any, res: any, next: any) => {
+  if (!req.session?.userId) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+  
+  const user = await storage.getUser(req.session.userId);
+  if (!user) {
+    return res.status(401).json({ error: "User not found" });
+  }
+  
+  req.user = user;
+  next();
+};
+
 /**
- * Register authentication and API routes on the given Express app and create an HTTP server.
+ * Registers API routes and middleware onto the provided Express application and returns an HTTP server.
  *
- * Sets up authentication, mounts auth and profile/link/analytics endpoints (with appropriate
- * validation and ownership checks), and returns an HTTP server created from the app.
- *
- * @returns An HTTP Server instance wrapping the configured Express app
+ * @param app - The Express application to attach middleware and route handlers to.
+ * @returns The created HTTP Server instance that serves the configured Express app.
  */
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Setup authentication
-  await setupAuth(app);
-
+  // Setup session middleware
+  app.use(sessionMiddleware);
+  
   // Email/password auth routes
   app.use('/api/auth', authRoutes);
 
-  // Replit Auth routes (keep for backward compatibility)
+  // Get current user (email/password auth)
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
+      const user = req.user;
       
       // Include profile information with user
-      const profile = await storage.getProfileByUserId(userId);
+      const profile = await storage.getProfileByUserId(user.id);
       res.json({ ...user, profile });
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -69,7 +109,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/profile/:id", isAuthenticated, async (req: any, res) => {
     try {
       const { id } = req.params;
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       // Check ownership
       const existingProfile = await storage.getProfileById(id);
@@ -96,7 +136,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create social link (protected)
   app.post("/api/links", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const linkData = insertSocialLinkSchema.parse(req.body);
       
       // Check ownership of the profile
@@ -119,7 +159,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/links/:id", isAuthenticated, async (req: any, res) => {
     try {
       const { id } = req.params;
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       // Check ownership
       const existingLink = await storage.getSocialLink(id);
@@ -148,7 +188,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/links/:id", isAuthenticated, async (req: any, res) => {
     try {
       const { id } = req.params;
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       // Check ownership
       const existingLink = await storage.getSocialLink(id);
@@ -171,7 +211,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Reorder social links (protected)
   app.patch("/api/links/reorder", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { linkIds } = reorderLinksSchema.parse(req.body);
       
       // Check ownership of ALL links (not just the first one!)
@@ -214,6 +254,155 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await storage.incrementIndividualLinkClick(id);
       
       res.json({ url: link.url });
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Theme routes
+
+  // Get active theme for a profile
+  app.get("/api/themes/:profileId", async (req, res) => {
+    try {
+      const { profileId } = req.params;
+      const theme = await storage.getActiveTheme(profileId);
+      
+      if (!theme) {
+        // Return default theme if no custom theme exists
+        return res.json(presetThemes[0]);
+      }
+      
+      res.json(theme);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Get preset themes
+  app.get("/api/themes/presets", async (req, res) => {
+    try {
+      console.log('Fetching preset themes, count:', presetThemes?.length || 0);
+      console.log('Preset themes type:', Array.isArray(presetThemes) ? 'array' : typeof presetThemes);
+      console.log('First preset name:', presetThemes?.[0]?.name);
+      
+      if (!Array.isArray(presetThemes)) {
+        console.error('presetThemes is not an array:', presetThemes);
+        return res.status(500).json({ message: "Preset themes not loaded correctly" });
+      }
+      
+      // Return preset themes with proper structure for the frontend
+      const formattedPresets = presetThemes.map((preset, index) => ({
+        id: `preset-${index}`,
+        name: preset.name,
+        colors: preset.colors,
+        gradients: preset.gradients,
+        fonts: preset.fonts,
+        layout: preset.layout,
+        isPreset: true,
+      }));
+      console.log('Formatted presets count:', formattedPresets.length);
+      console.log('First formatted preset:', formattedPresets[0]?.name);
+      res.json(formattedPresets);
+    } catch (error) {
+      console.error('Error fetching preset themes:', error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Create new theme (protected)
+  app.post("/api/themes", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const themeData = insertThemeSchema.parse(req.body);
+      
+      // Check ownership of the profile
+      const profile = await storage.getProfileById(themeData.profileId);
+      if (!profile || profile.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden: You can only create themes for your own profile" });
+      }
+      
+      const theme = await storage.createTheme(themeData);
+      res.status(201).json(theme);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid input", errors: error.errors });
+      }
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Update theme (protected)
+  app.patch("/api/themes/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+      
+      // Check ownership
+      const existingTheme = await storage.getTheme(id);
+      if (!existingTheme) {
+        return res.status(404).json({ message: "Theme not found" });
+      }
+      
+      const profile = await storage.getProfileById(existingTheme.profileId);
+      if (!profile || profile.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden: You can only edit your own themes" });
+      }
+      
+      const updates = updateThemeSchema.parse({ id, ...req.body });
+      const theme = await storage.updateTheme(id, updates);
+      
+      res.json(theme);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid input", errors: error.errors });
+      }
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Delete theme (protected)
+  app.delete("/api/themes/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+      
+      // Check ownership
+      const existingTheme = await storage.getTheme(id);
+      if (!existingTheme) {
+        return res.status(404).json({ message: "Theme not found" });
+      }
+      
+      const profile = await storage.getProfileById(existingTheme.profileId);
+      if (!profile || profile.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden: You can only delete your own themes" });
+      }
+      
+      await storage.deleteTheme(id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Activate theme (protected)
+  app.post("/api/themes/:id/activate", isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+      
+      // Check ownership
+      const existingTheme = await storage.getTheme(id);
+      if (!existingTheme) {
+        return res.status(404).json({ message: "Theme not found" });
+      }
+      
+      const profile = await storage.getProfileById(existingTheme.profileId);
+      if (!profile || profile.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden: You can only activate your own themes" });
+      }
+      
+      await storage.activateTheme(id, existingTheme.profileId);
+      res.json({ message: "Theme activated successfully" });
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });
     }
