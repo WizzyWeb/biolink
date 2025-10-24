@@ -172,37 +172,59 @@ router.get("/verify-email", async (req: Request, res: Response) => {
     }
 
     // Check if token is expired
+    
     if (user.emailVerificationExpires && user.emailVerificationExpires < new Date()) {
       return res.status(400).json({ error: "Verification token has expired" });
     }
 
-    // Update user as verified
+    // Get or create profile BEFORE clearing the token
+    let profile = await storage.getDefaultProfileByUserId(user.id);
+    if (!profile) {
+      // Generate unique pageName from email
+      let basePageName = user.email.split("@")[0].toLowerCase().replace(/[^a-z0-9-_]/g, "");
+      let pageName = basePageName;
+      let counter = 1;
+      
+      // Ensure pageName is unique
+      while (await storage.getProfileByPageName(pageName)) {
+        pageName = `${basePageName}${counter}`;
+        counter++;
+      }
+      
+      const displayName = user.firstName && user.lastName 
+        ? `${user.firstName} ${user.lastName}`
+        : user.firstName || user.email.split("@")[0];
+
+      console.log("Creating profile for user:", user.id, "with pageName:", pageName);
+      
+      // Ensure pageName is not null or empty
+      if (!pageName || pageName.trim() === '') {
+        pageName = `user${user.id.slice(-8)}`;
+      }
+      
+      try {
+        profile = await storage.createBioPage(user.id, {
+          pageName,
+          displayName,
+          bio: "Welcome to my LinkBoard profile!",
+          profileImageUrl: user.profileImageUrl || undefined,
+        });
+        console.log("Profile created successfully:", profile.id);
+
+        // Send welcome email
+        await sendWelcomeEmail(user.email, profile.pageName);
+      } catch (error) {
+        console.error("Error creating profile:", error);
+        throw error;
+      }
+    }
+
+    // Update user as verified AFTER profile creation
     await storage.updateUser(user.id, {
       isEmailVerified: true,
       emailVerificationToken: null,
       emailVerificationExpires: null,
     });
-
-    // Get or create profile
-    let profile = await storage.getProfileByUserId(user.id);
-    if (!profile) {
-      // Generate username from email
-      const username = user.email.split("@")[0].toLowerCase().replace(/[^a-z0-9]/g, "");
-      const displayName = user.firstName && user.lastName 
-        ? `${user.firstName} ${user.lastName}`
-        : user.firstName || user.email.split("@")[0];
-
-      profile = await storage.createProfile({
-        userId: user.id,
-        username,
-        displayName,
-        bio: "Welcome to my LinkBoard profile!",
-        profileImageUrl: user.profileImageUrl || null,
-      });
-
-      // Send welcome email
-      await sendWelcomeEmail(user.email, profile.username);
-    }
 
     res.json({
       message: "Email verified successfully!",

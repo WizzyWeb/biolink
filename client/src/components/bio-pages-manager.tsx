@@ -187,6 +187,27 @@ export default function BioPagesManager({ userId }: BioPagesManagerProps) {
     setDefaultMutation.mutate(page.id);
   };
 
+  // Helper functions to check if operations are pending for specific pages
+  const isPendingFor = (pageId: string) => {
+    return (
+      updatePageMutation.isPending && selectedPage?.id === pageId ||
+      deletePageMutation.isPending && deletePageMutation.variables === pageId ||
+      setDefaultMutation.isPending && setDefaultMutation.variables === pageId
+    );
+  };
+
+  const isEditPending = (pageId: string) => {
+    return updatePageMutation.isPending && selectedPage?.id === pageId;
+  };
+
+  const isDeletePending = (pageId: string) => {
+    return deletePageMutation.isPending && deletePageMutation.variables === pageId;
+  };
+
+  const isSetDefaultPending = (pageId: string) => {
+    return setDefaultMutation.isPending && setDefaultMutation.variables === pageId;
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -310,6 +331,9 @@ export default function BioPagesManager({ userId }: BioPagesManagerProps) {
                     size="sm"
                     variant="outline"
                     onClick={() => handleEditPage(page)}
+                    disabled={isPendingFor(page.id)}
+                    aria-label={`Edit page ${page.displayName}`}
+                    title={`Edit page ${page.displayName}`}
                   >
                     <Edit className="w-3 h-3" />
                   </Button>
@@ -318,6 +342,9 @@ export default function BioPagesManager({ userId }: BioPagesManagerProps) {
                     variant="outline"
                     onClick={() => handleDeletePage(page)}
                     className="text-red-600 hover:text-red-700"
+                    disabled={isPendingFor(page.id)}
+                    aria-label={`Delete page ${page.displayName}`}
+                    title={`Delete page ${page.displayName}`}
                   >
                     <Trash2 className="w-3 h-3" />
                   </Button>
@@ -326,16 +353,24 @@ export default function BioPagesManager({ userId }: BioPagesManagerProps) {
                       size="sm"
                       variant="outline"
                       onClick={() => handleSetDefault(page)}
+                      disabled={isPendingFor(page.id)}
+                      aria-label={`Set ${page.displayName} as default page`}
+                      title={`Set ${page.displayName} as default page`}
                     >
                       <Star className="w-3 h-3" />
                     </Button>
                   )}
                 </div>
                 <Link href={`/${page.pageName}`}>
-                  <Button size="sm" variant="ghost" className="text-primary">
+                  <a 
+                    className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3 text-primary"
+                    href={`/${page.pageName}`}
+                    aria-label={`View page ${page.displayName}`}
+                    title={`View page ${page.displayName}`}
+                  >
                     <ExternalLink className="w-3 h-3 mr-1" />
                     View
-                  </Button>
+                  </a>
                 </Link>
               </div>
             </CardContent>
