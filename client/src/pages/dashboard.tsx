@@ -195,6 +195,18 @@ export default function Dashboard() {
     );
   }
 
+  // If user has no profile data at all, show loading or error
+  if (!data) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading profile data...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <ThemeProvider profileId={data?.profile?.id}>
       <div className="min-h-screen bg-gray-50">
@@ -264,8 +276,14 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Bio Pages Management */}
+        {/* Bio Pages Management - Additional Section */}
         <div className="bg-white rounded-card shadow-lg p-6 mb-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-display font-bold text-charcoal flex items-center gap-2">
+              <LinkIcon className="w-5 h-5 text-primary" />
+              Bio Pages Management
+            </h2>
+          </div>
           <BioPagesManager userId={user?.id || ""} />
         </div>
 
