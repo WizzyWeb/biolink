@@ -100,15 +100,9 @@ export function ThemeProvider({ children, profileId }: ThemeProviderProps) {
     setError(null);
     try {
       const response = await apiRequest('GET', `/api/themes/${profileId}`);
-      if (response.ok) {
-        const themeData = await response.json();
-        setThemeState(themeData);
-        applyTheme(themeData);
-      } else {
-        // Use default theme if no custom theme exists
-        setThemeState(defaultTheme);
-        applyTheme(defaultTheme);
-      }
+      const themeData = await response.json();
+      setThemeState(themeData);
+      applyTheme(themeData);
     } catch (err) {
       console.error('Failed to fetch theme:', err);
       setError('Failed to load theme');

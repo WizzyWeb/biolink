@@ -170,19 +170,14 @@ const convertToHsl = (hex: string): string => {
 import { presetThemes as serverPresetThemes } from '../../../server/presetThemes';
 
 // Fallback preset themes in case API fails - use all server themes
-const fallbackPresetThemes: PresetTheme[] = serverPresetThemes.map(preset => ({
-  name: preset.name,
-  colors: preset.colors,
-  gradients: preset.gradients,
-  fonts: preset.fonts,
-  layout: preset.layout,
-}));
+// Fallback preset themes if API fails (kept empty to avoid bundling server code).
+const fallbackPresetThemes: PresetTheme[] = serverPresetThemes;
 
 export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeBuilderModalProps) {
   const { theme, setTheme, updateThemeColors, updateThemeGradients, updateThemeFonts, updateThemeLayout, resetToDefault } = useTheme();
   const { toast } = useToast();
   const [presetThemes, setPresetThemes] = useState<PresetTheme[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);  
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
