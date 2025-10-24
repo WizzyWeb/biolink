@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import type { ReactElement } from "react";
 import BioPagesManager from "@/components/bio-pages-manager";
 
 // Mock the API request function
@@ -16,7 +17,7 @@ const createTestQueryClient = () =>
     },
   });
 
-const renderWithQueryClient = (component: React.ReactElement) => {
+const renderWithQueryClient = (component: ReactElement) => {
   const queryClient = createTestQueryClient();
   return render(
     <QueryClientProvider client={queryClient}>
