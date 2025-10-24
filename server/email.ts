@@ -1,4 +1,16 @@
 import nodemailer from "nodemailer";
+import { 
+  getVerificationEmailTemplate, 
+  getPasswordResetEmailTemplate, 
+  getWelcomeEmailTemplate,
+  getPasswordChangedEmailTemplate,
+  getAccountLockedEmailTemplate,
+  getEmailChangeConfirmationTemplate,
+  getNewsletterTemplate,
+  getAccountDeletionConfirmationTemplate,
+  getDefaultEmailData,
+  type EmailTemplateData 
+} from "./emailTemplates";
 
 // SMTP Configuration
 const transporter = nodemailer.createTransport({
@@ -11,96 +23,19 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const SMTP_FROM = process.env.SMTP_FROM || process.env.SMTP_USER || "noreply@LinkBoard.com";
+const SMTP_FROM = process.env.SMTP_FROM || process.env.SMTP_USER || "noreply@linkboard.com";
 const APP_URL = process.env.REPLIT_DOMAINS?.split(",")[0] 
   ? `https://${process.env.REPLIT_DOMAINS.split(",")[0]}`
   : process.env.APP_URL || "http://localhost:3000";
 
-// Email Templates
-const getEmailTemplate = (content: string) => `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f5f5f5;
-    }
-    .container {
-      background-color: #ffffff;
-      border-radius: 8px;
-      padding: 40px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .logo {
-      font-size: 32px;
-      font-weight: bold;
-      color: #6366f1;
-      margin-bottom: 10px;
-    }
-    .button {
-      display: inline-block;
-      padding: 14px 28px;
-      background-color: #6366f1;
-      color: #ffffff;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: 600;
-      margin: 20px 0;
-    }
-    .button:hover {
-      background-color: #4f46e5;
-    }
-    .footer {
-      text-align: center;
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px solid #e5e5e5;
-      color: #666;
-      font-size: 14px;
-    }
-    .code {
-      background-color: #f3f4f6;
-      padding: 12px;
-      border-radius: 6px;
-      font-family: monospace;
-      font-size: 18px;
-      letter-spacing: 2px;
-      text-align: center;
-      margin: 20px 0;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <div class="logo">🔗 LinkBoard</div>
-    </div>
-    ${content}
-    <div class="footer">
-      <p>This is an automated email from LinkBoard. Please do not reply to this email.</p>
-      <p>&copy; ${new Date().getFullYear()} LinkBoard. All rights reserved.</p>
-    </div>
-  </div>
-</body>
-</html>
-`;
+// Get default email template data
+const getEmailData = (): EmailTemplateData => getDefaultEmailData(APP_URL);
 
 export interface SendEmailOptions {
   to: string;
   subject: string;
   html: string;
+  text?: string;
 }
 
 /**
@@ -113,7 +48,7 @@ export interface SendEmailOptions {
  * @param html - HTML content to embed into the email body (will be wrapped with the standard email template)
  * @returns An object with `success: true` and `messageId` on success, or `success: false` and `error` describing the failure
  */
-export async function sendEmail({ to, subject, html }: SendEmailOptions) {
+export async function sendEmail({ to, subject, html, text }: SendEmailOptions) {
   try {
     // Check if SMTP is configured
     if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
@@ -128,7 +63,8 @@ export async function sendEmail({ to, subject, html }: SendEmailOptions) {
       from: `"LinkBoard" <${SMTP_FROM}>`,
       to,
       subject,
-      html: getEmailTemplate(html),
+      html,
+      text: text || html.replace(/<[^>]*>/g, ''), // Strip HTML tags for text version
     });
 
     console.log("Email sent:", info.messageId);
@@ -146,26 +82,19 @@ export async function sendEmail({ to, subject, html }: SendEmailOptions) {
  * @param token - One-time verification token included in the link
  * @returns An object with `success: true` and `messageId` when the message is sent, or `success: false` and an `error` string on failure
  */
-export async function sendVerificationEmail(email: string, token: string) {
+export async function sendVerificationEmail(email: string, token: string, firstName?: string) {
   const verificationUrl = `${APP_URL}/verify-email?token=${token}`;
-  
-  const html = `
-    <h2>Welcome to LinkBoard!</h2>
-    <p>Thank you for creating an account. Please verify your email address to get started.</p>
-    <p style="text-align: center;">
-      <a href="${verificationUrl}" class="button">Verify Email Address</a>
-    </p>
-    <p>Or copy and paste this link into your browser:</p>
-    <p style="word-break: break-all; color: #666; font-size: 14px;">${verificationUrl}</p>
-    <p style="margin-top: 30px; color: #666; font-size: 14px;">
-      This link will expire in 24 hours. If you didn't create an account with LinkBoard, you can safely ignore this email.
-    </p>
-  `;
+  const template = getVerificationEmailTemplate({
+    ...getEmailData(),
+    verificationUrl,
+    firstName
+  });
 
   return sendEmail({
     to: email,
-    subject: "Verify Your Email - LinkBoard",
-    html,
+    subject: template.subject,
+    html: template.html,
+    text: template.text,
   });
 }
 
@@ -176,26 +105,19 @@ export async function sendVerificationEmail(email: string, token: string) {
  * @param token - Single-use token appended to the reset URL
  * @returns An object with `success: true` and `messageId` when the email was sent, or `success: false` and `error` when sending failed
  */
-export async function sendPasswordResetEmail(email: string, token: string) {
+export async function sendPasswordResetEmail(email: string, token: string, firstName?: string) {
   const resetUrl = `${APP_URL}/reset-password?token=${token}`;
-  
-  const html = `
-    <h2>Password Reset Request</h2>
-    <p>We received a request to reset your password for your LinkBoard account.</p>
-    <p style="text-align: center;">
-      <a href="${resetUrl}" class="button">Reset Password</a>
-    </p>
-    <p>Or copy and paste this link into your browser:</p>
-    <p style="word-break: break-all; color: #666; font-size: 14px;">${resetUrl}</p>
-    <p style="margin-top: 30px; color: #666; font-size: 14px;">
-      This link will expire in 1 hour. If you didn't request a password reset, you can safely ignore this email.
-    </p>
-  `;
+  const template = getPasswordResetEmailTemplate({
+    ...getEmailData(),
+    resetUrl,
+    firstName
+  });
 
   return sendEmail({
     to: email,
-    subject: "Reset Your Password - LinkBoard",
-    html,
+    subject: template.subject,
+    html: template.html,
+    text: template.text,
   });
 }
 
@@ -204,23 +126,113 @@ export async function sendPasswordResetEmail(email: string, token: string) {
  *
  * @returns `{ success: true, messageId?: string }` on successful send; `{ success: false, error: string }` on failure.
  */
-export async function sendWelcomeEmail(email: string, username: string) {
+export async function sendWelcomeEmail(email: string, username: string, firstName?: string) {
   const profileUrl = `${APP_URL}/${username}`;
-  
-  const html = `
-    <h2>Welcome to LinkBoard! 🎉</h2>
-    <p>Your account has been successfully created and verified!</p>
-    <p>Your profile is now live at:</p>
-    <div class="code">${profileUrl}</div>
-    <p style="text-align: center;">
-      <a href="${APP_URL}/dashboard" class="button">Go to Dashboard</a>
-    </p>
-    <p>Start customizing your profile and adding links to share with the world!</p>
-  `;
+  const template = getWelcomeEmailTemplate({
+    ...getEmailData(),
+    profileUrl,
+    username,
+    firstName
+  });
 
   return sendEmail({
     to: email,
-    subject: "Welcome to LinkBoard!",
-    html,
+    subject: template.subject,
+    html: template.html,
+    text: template.text,
+  });
+}
+
+/**
+ * Sends a password changed confirmation email
+ */
+export async function sendPasswordChangedEmail(email: string, firstName?: string) {
+  const changeTime = new Date().toLocaleString();
+  const template = getPasswordChangedEmailTemplate({
+    ...getEmailData(),
+    firstName,
+    changeTime
+  });
+
+  return sendEmail({
+    to: email,
+    subject: template.subject,
+    html: template.html,
+    text: template.text,
+  });
+}
+
+/**
+ * Sends an account locked notification email
+ */
+export async function sendAccountLockedEmail(email: string, unlockUrl: string, lockReason: string, firstName?: string) {
+  const template = getAccountLockedEmailTemplate({
+    ...getEmailData(),
+    firstName,
+    unlockUrl,
+    lockReason
+  });
+
+  return sendEmail({
+    to: email,
+    subject: template.subject,
+    html: template.html,
+    text: template.text,
+  });
+}
+
+/**
+ * Sends an email change confirmation email
+ */
+export async function sendEmailChangeConfirmationEmail(email: string, newEmail: string, confirmationUrl: string, firstName?: string) {
+  const template = getEmailChangeConfirmationTemplate({
+    ...getEmailData(),
+    firstName,
+    newEmail,
+    confirmationUrl
+  });
+
+  return sendEmail({
+    to: email,
+    subject: template.subject,
+    html: template.html,
+    text: template.text,
+  });
+}
+
+/**
+ * Sends a newsletter email
+ */
+export async function sendNewsletterEmail(email: string, newsletterContent: string, featuredLinks?: Array<{title: string; url: string; description: string}>, firstName?: string) {
+  const template = getNewsletterTemplate({
+    ...getEmailData(),
+    firstName,
+    newsletterContent,
+    featuredLinks
+  });
+
+  return sendEmail({
+    to: email,
+    subject: template.subject,
+    html: template.html,
+    text: template.text,
+  });
+}
+
+/**
+ * Sends an account deletion confirmation email
+ */
+export async function sendAccountDeletionConfirmationEmail(email: string, deletionDate: string, firstName?: string) {
+  const template = getAccountDeletionConfirmationTemplate({
+    ...getEmailData(),
+    firstName,
+    deletionDate
+  });
+
+  return sendEmail({
+    to: email,
+    subject: template.subject,
+    html: template.html,
+    text: template.text,
   });
 }
