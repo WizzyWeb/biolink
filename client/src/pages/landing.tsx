@@ -34,13 +34,14 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Link2 className="w-8 h-8 text-primary" />
-            <span className="text-2xl font-display font-bold text-charcoal">LinkHub</span>
+            <span className="text-2xl font-display font-bold text-charcoal">LinkBoard</span>
           </div>
           <div className="flex items-center gap-4">
             <a 
-              href="https://github.com" 
+              href="https://github.com/WizzyWeb/biolink" 
               target="_blank" 
               rel="noopener noreferrer"
+              title="View on GitHub"
               className="text-gray-600 hover:text-charcoal transition-colors"
             >
               <Github className="w-6 h-6" />

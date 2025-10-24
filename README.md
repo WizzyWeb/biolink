@@ -1,4 +1,4 @@
-## BioLink — Open Source Link in Bio Platform
+## LinkBoard — Open Source Link in Bio Platform
 
 <div align="center">
 
@@ -9,13 +9,15 @@
 
 **A powerful, privacy-first, self-hostable alternative to Linktree and Bio.fm**
 
+LinkBoard is an open-source, customizable "link in bio" tool that allows you to easily organize and share all your important links in one place. Perfect for social media influencers, creators, or professionals, LinkBoard provides a simple yet powerful way to consolidate your online presence with a visually appealing and user-friendly landing page. Whether you're promoting your portfolio, social accounts, or content, LinkBoard makes sharing your links effortless and stylish.
+
 [Features](#features) • [Quick Start](./docs/QUICKSTART.md) • [Roadmap](./docs/ROADMAP.md) • [Contributing](./docs/CONTRIBUTING.md) • [Demo](#demo)
 
 </div>
 
 ---
 
-### 🎯 Why BioLink?
+### 🎯 Why LinkBoard?
 
 - ✅ **100% Open Source** - Complete transparency and control
 - ✅ **Self-Hosted** - Your data, your rules
@@ -32,14 +34,17 @@
 - 📊 **Analytics Dashboard**: Profile views, link clicks, and engagement metrics
 - 🎨 **Modern UI**: Responsive design with Tailwind CSS and Radix UI
 - 📱 **Share Tools**: One-click copy and social media sharing
+- 🔐 **User Authentication**: Secure login and registration system
+- 🎨 **Theme Customization**: Custom themes with colors, gradients, fonts, and layouts
+- 📄 **Multiple Bio Pages**: Create and manage multiple bio pages per user account
 
 **Coming Soon (v2.0+):**
-- 🔐 Authentication & multi-user support
-- 🎨 Theme customization engine
 - 📈 Advanced analytics with geographic & device tracking
 - 💳 Payment integration (Stripe, PayPal)
 - 🛍️ E-commerce features
 - 📧 Email collection & marketing tools
+- 🔗 Custom domain support
+- 📱 Mobile applications
 
 [View all features →](./docs/FEATURES.md) | [See roadmap →](./docs/ROADMAP.md)
 
@@ -172,20 +177,20 @@ The production server serves static files from `dist/public` and the API under `
 
 ### Public Profiles
 
-- Visit `/{username}` to view a public profile. The project seeds `demo`, so `http://localhost:3000/demo` should work after seeding.
+- Visit `/{pageName}` to view a public profile. The project seeds `demo`, so `http://localhost:3000/demo` should work after seeding.
+- Each user can create multiple bio pages with unique names (e.g., `/personal`, `/business`, `/portfolio`)
 
-### Edit Mode (URL‑gated)
+### Dashboard & Management
 
-- To access edit controls on a profile page, append the query parameter `?edit=true`:
-
-```
-http://localhost:3000/{username}?edit=true
-```
-
-- When present, an Edit toggle appears in the top‑right. Toggle it to switch between View and Edit. In Edit mode you can:
-  - Update profile info
-  - Add/edit/delete/reorder links
-  - Navigate to the Analytics dashboard
+- Log in to access your dashboard at `/dashboard`
+- Create and manage multiple bio pages
+- Each page has its own:
+  - Display name and bio
+  - Social links
+  - Custom theme
+  - Analytics
+- Set one page as your default page
+- Switch between pages to edit different profiles
 
 ### Analytics
 
@@ -201,7 +206,12 @@ http://localhost:3000/{username}?edit=true
 
 Base URL: same origin as the client, under `/api`.
 
-- `GET /api/profile/:username` — returns `{ profile, links }` and increments profile views
+- `GET /api/profile/:pageName` — returns `{ profile, links }` and increments profile views
+- `GET /api/bio-pages` — get all bio pages for authenticated user
+- `POST /api/bio-pages` — create a new bio page
+- `PATCH /api/bio-pages/:id` — update bio page
+- `DELETE /api/bio-pages/:id` — delete bio page
+- `POST /api/bio-pages/:id/set-default` — set default bio page
 - `PATCH /api/profile/:id` — update profile fields
 - `POST /api/links` — create a social link
 - `PATCH /api/links/:id` — update a link
@@ -291,10 +301,10 @@ We welcome contributions! Whether you're fixing bugs, adding features, or improv
 
 ## 🌟 Showcase
 
-Using BioLink? We'd love to feature your profile!
+Using LinkBoard? We'd love to feature your profile!
 
 - Open a [discussion](../../discussions) with your profile URL
-- Tag us on Twitter with #BioLink
+- Tag us on Twitter with #LinkBoard
 - Get featured in our showcase gallery
 
 ---
@@ -305,7 +315,7 @@ Using BioLink? We'd love to feature your profile!
 - **Bug Reports:** [Issue Tracker](../../issues)
 - **Feature Requests:** [Discussions](../../discussions)
 - **Discord:** Coming soon!
-- **Twitter:** [@biolink](#) (Coming soon)
+- **Twitter:** [@linkboard](#) (Coming soon)
 
 ---
 
@@ -322,10 +332,10 @@ Built with amazing open-source technologies:
 
 ## 📊 Project Status
 
-![GitHub stars](https://img.shields.io/github/stars/yourusername/biolink?style=social)
-![GitHub forks](https://img.shields.io/github/forks/yourusername/biolink?style=social)
-![GitHub issues](https://img.shields.io/github/issues/yourusername/biolink)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/yourusername/biolink)
+![GitHub stars](https://img.shields.io/github/stars/yourusername/linkboard?style=social)
+![GitHub forks](https://img.shields.io/github/forks/yourusername/linkboard?style=social)
+![GitHub issues](https://img.shields.io/github/issues/yourusername/linkboard)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/yourusername/linkboard)
 
 ---
 
@@ -346,7 +356,7 @@ If you find this project useful, please consider giving it a star! It helps us r
 <div align="center">
 
 **Made with ❤️ by the open-source community**
-
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/WizzyWeb/biolink?utm_source=oss&utm_medium=github&utm_campaign=WizzyWeb%2Fbiolink&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 [⬆ Back to Top](#biolink--open-source-link-in-bio-platform)
 
 </div>

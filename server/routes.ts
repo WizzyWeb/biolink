@@ -13,6 +13,8 @@ import {
   reorderLinksSchema,
   insertThemeSchema,
   updateThemeSchema,
+  createBioPageSchema,
+  updateBioPageSchema,
   type Theme
 } from "@shared/schema";
 import { presetThemes } from "./presetThemes";
@@ -83,11 +85,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch user" });
     }
   });
-  // Get profile by username
-  app.get("/api/profile/:username", async (req, res) => {
+  // Get profile by page name (public)
+  app.get("/api/profile/:pageName", async (req, res) => {
     try {
-      const { username } = req.params;
-      const profile = await storage.getProfile(username);
+      const { pageName } = req.params;
+      const profile = await storage.getProfileByPageName(pageName);
       
       if (!profile) {
         return res.status(404).json({ message: "Profile not found" });
@@ -99,6 +101,120 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const links = await storage.getSocialLinks(profile.id);
       
       res.json({ profile, links });
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Get all bio pages for authenticated user
+  app.get("/api/bio-pages", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const pages = await storage.getProfilesByUserId(userId);
+      res.json(pages);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Create new bio page
+  app.post("/api/bio-pages", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const pageData = createBioPageSchema.parse(req.body);
+      
+      // Check if page name already exists globally
+      const existingProfile = await storage.getProfileByPageName(pageData.pageName);
+      if (existingProfile) {
+        return res.status(409).json({ message: "Page name already exists" });
+      }
+      
+      const profile = await storage.createBioPage(userId, pageData);
+      res.status(201).json(profile);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid input", errors: error.errors });
+      }
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Update bio page
+  app.patch("/api/bio-pages/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+      
+      // Check ownership
+      const existingProfile = await storage.getProfileById(id);
+      if (!existingProfile) {
+        return res.status(404).json({ message: "Bio page not found" });
+      }
+      
+      if (existingProfile.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden: You can only edit your own bio pages" });
+      }
+      
+      // Validate the ID parameter
+      if (!id || typeof id !== 'string') {
+        return res.status(400).json({ message: "Invalid bio page ID" });
+      }
+      
+      const updates = updateBioPageSchema.parse(req.body);
+      
+      // If updating page name, check if it's available
+      if (updates.pageName && updates.pageName !== existingProfile.pageName) {
+        const existingProfileWithName = await storage.getProfileByPageName(updates.pageName);
+        if (existingProfileWithName) {
+          return res.status(409).json({ message: "Page name already exists" });
+        }
+      }
+      
+      const profile = await storage.updateBioPage(id, updates);
+      res.json(profile);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid input", errors: error.errors });
+      }
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Delete bio page
+  app.delete("/api/bio-pages/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+      
+      const deleted = await storage.deleteBioPage(id, userId);
+      if (!deleted) {
+        return res.status(404).json({ message: "Bio page not found or you don't have permission to delete it" });
+      }
+      
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Set default bio page
+  app.post("/api/bio-pages/:id/set-default", isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+      
+      // Check ownership
+      const existingProfile = await storage.getProfileById(id);
+      if (!existingProfile) {
+        return res.status(404).json({ message: "Bio page not found" });
+      }
+      
+      if (existingProfile.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden: You can only set your own bio pages as default" });
+      }
+      
+      await storage.setDefaultBioPage(id, userId);
+      res.json({ message: "Default bio page updated successfully" });
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });
     }

@@ -7,3 +7,4 @@ vite.config.ts.*
 .cursor
 .env
 .replit
+CLAUDE.md
