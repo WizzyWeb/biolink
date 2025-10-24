@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
-import { LogOut, Eye, Settings, Link as LinkIcon, BarChart3 } from "lucide-react";
+import { LogOut, Eye, Settings, Link as LinkIcon, BarChart3, Palette } from "lucide-react";
 import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import ProfileSection from "@/components/profile-section";
@@ -11,6 +11,7 @@ import SocialLinksList from "@/components/social-links-list";
 import AddLinkModal from "@/components/add-link-modal";
 import EditProfileModal from "@/components/edit-profile-modal";
 import EditLinkModal from "@/components/edit-link-modal";
+import ThemeBuilderModal from "@/components/theme-builder-modal";
 import { type Profile, type SocialLink } from "@shared/schema";
 import { useState } from "react";
 
@@ -25,6 +26,7 @@ export default function Dashboard() {
   const [isAddLinkModalOpen, setIsAddLinkModalOpen] = useState(false);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
   const [isEditLinkModalOpen, setIsEditLinkModalOpen] = useState(false);
+  const [isThemeBuilderModalOpen, setIsThemeBuilderModalOpen] = useState(false);
   const [selectedLink, setSelectedLink] = useState<SocialLink | null>(null);
 
   useEffect(() => {
@@ -164,13 +166,24 @@ export default function Dashboard() {
               <Settings className="w-5 h-5 text-primary" />
               Profile Settings
             </h2>
-            <Button
-              onClick={() => setIsEditProfileModalOpen(true)}
-              className="bg-primary hover:bg-primary-light text-white"
-              data-testid="button-edit-profile"
-            >
-              Edit Profile
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => setIsThemeBuilderModalOpen(true)}
+                variant="outline"
+                className="flex items-center gap-2"
+                data-testid="button-theme-builder"
+              >
+                <Palette className="w-4 h-4" />
+                Customize Theme
+              </Button>
+              <Button
+                onClick={() => setIsEditProfileModalOpen(true)}
+                className="bg-primary hover:bg-primary-light text-white"
+                data-testid="button-edit-profile"
+              >
+                Edit Profile
+              </Button>
+            </div>
           </div>
           {data && (
             <ProfileSection
@@ -238,6 +251,12 @@ export default function Dashboard() {
             isOpen={isEditLinkModalOpen}
             onClose={() => setIsEditLinkModalOpen(false)}
             link={selectedLink}
+          />
+
+          <ThemeBuilderModal
+            isOpen={isThemeBuilderModalOpen}
+            onClose={() => setIsThemeBuilderModalOpen(false)}
+            profileId={data.profile.id}
           />
         </>
       )}

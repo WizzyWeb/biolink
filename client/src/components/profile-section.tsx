@@ -9,7 +9,7 @@ interface ProfileSectionProps {
 
 export default function ProfileSection({ profile, isEditMode, onEditProfile }: ProfileSectionProps) {
   return (
-    <div className="profile-card bg-white rounded-card shadow-lg p-8 mb-6 text-center">
+    <div className="profile-card theme-card theme-spacing-normal mb-6 text-center">
       {/* Profile Image */}
       <div className="mb-6 flex justify-center">
         <div className="gradient-border">
@@ -24,10 +24,10 @@ export default function ProfileSection({ profile, isEditMode, onEditProfile }: P
 
       {/* Profile Info */}
       <div className="space-y-3">
-        <h1 className="text-3xl md:text-4xl font-display font-bold text-charcoal" data-testid="text-display-name">
+        <h1 className="text-3xl md:text-4xl theme-font-display font-bold text-charcoal" data-testid="text-display-name">
           {profile.displayName}
         </h1>
-        <p className="text-base md:text-lg text-gray-600 font-sans max-w-md mx-auto whitespace-pre-line" data-testid="text-bio">
+        <p className="text-base md:text-lg text-gray-600 theme-font-body max-w-md mx-auto whitespace-pre-line" data-testid="text-bio">
           {profile.bio}
         </p>
       </div>

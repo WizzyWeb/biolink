@@ -9,8 +9,11 @@ import {
   insertSocialLinkSchema, 
   updateProfileSchema, 
   updateSocialLinkSchema,
-  reorderLinksSchema 
+  reorderLinksSchema,
+  insertThemeSchema,
+  updateThemeSchema
 } from "@shared/schema";
+import { presetThemes } from "./presetThemes";
 import { z } from "zod";
 
 // Session configuration
@@ -240,6 +243,143 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await storage.incrementIndividualLinkClick(id);
       
       res.json({ url: link.url });
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Theme routes
+
+  // Get active theme for a profile
+  app.get("/api/themes/:profileId", async (req, res) => {
+    try {
+      const { profileId } = req.params;
+      const theme = await storage.getActiveTheme(profileId);
+      
+      if (!theme) {
+        // Return default theme if no custom theme exists
+        return res.json(presetThemes[0]);
+      }
+      
+      res.json(theme);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Get preset themes
+  app.get("/api/themes/presets", async (req, res) => {
+    try {
+      // Return preset themes with proper structure for the frontend
+      const formattedPresets = presetThemes.map((preset, index) => ({
+        id: `preset-${index}`,
+        name: preset.name,
+        colors: preset.colors,
+        gradients: preset.gradients,
+        fonts: preset.fonts,
+        layout: preset.layout,
+        isPreset: true,
+      }));
+      res.json(formattedPresets);
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Create new theme (protected)
+  app.post("/api/themes", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const themeData = insertThemeSchema.parse(req.body);
+      
+      // Check ownership of the profile
+      const profile = await storage.getProfileById(themeData.profileId);
+      if (!profile || profile.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden: You can only create themes for your own profile" });
+      }
+      
+      const theme = await storage.createTheme(themeData);
+      res.status(201).json(theme);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid input", errors: error.errors });
+      }
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Update theme (protected)
+  app.patch("/api/themes/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+      
+      // Check ownership
+      const existingTheme = await storage.getTheme(id);
+      if (!existingTheme) {
+        return res.status(404).json({ message: "Theme not found" });
+      }
+      
+      const profile = await storage.getProfileById(existingTheme.profileId);
+      if (!profile || profile.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden: You can only edit your own themes" });
+      }
+      
+      const updates = updateThemeSchema.parse({ id, ...req.body });
+      const theme = await storage.updateTheme(id, updates);
+      
+      res.json(theme);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid input", errors: error.errors });
+      }
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Delete theme (protected)
+  app.delete("/api/themes/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+      
+      // Check ownership
+      const existingTheme = await storage.getTheme(id);
+      if (!existingTheme) {
+        return res.status(404).json({ message: "Theme not found" });
+      }
+      
+      const profile = await storage.getProfileById(existingTheme.profileId);
+      if (!profile || profile.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden: You can only delete your own themes" });
+      }
+      
+      await storage.deleteTheme(id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Activate theme (protected)
+  app.post("/api/themes/:id/activate", isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+      
+      // Check ownership
+      const existingTheme = await storage.getTheme(id);
+      if (!existingTheme) {
+        return res.status(404).json({ message: "Theme not found" });
+      }
+      
+      const profile = await storage.getProfileById(existingTheme.profileId);
+      if (!profile || profile.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden: You can only activate your own themes" });
+      }
+      
+      await storage.activateTheme(id, existingTheme.profileId);
+      res.json({ message: "Theme activated successfully" });
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });
     }

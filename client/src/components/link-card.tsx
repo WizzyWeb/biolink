@@ -16,7 +16,7 @@ export default function LinkCard({ link, isEditMode, onDelete, onEdit, onClick }
 
   return (
     <div 
-      className="link-card bg-white rounded-card shadow-md p-5 cursor-pointer relative group"
+      className="link-card theme-card theme-spacing-normal cursor-pointer relative group"
       data-testid={`card-link-${link.id}`}
     >
       {/* Edit Actions (Edit Mode) */}
@@ -50,11 +50,11 @@ export default function LinkCard({ link, isEditMode, onDelete, onEdit, onClick }
           {icon}
         </div>
         <div className="flex-1">
-          <h3 className="text-lg font-sans font-semibold text-charcoal" data-testid={`text-title-${link.id}`}>
+          <h3 className="text-lg theme-font-body font-semibold text-charcoal" data-testid={`text-title-${link.id}`}>
             {link.title}
           </h3>
           {link.description && (
-            <p className="text-sm text-gray-500" data-testid={`text-description-${link.id}`}>
+            <p className="text-sm text-gray-500 theme-font-body" data-testid={`text-description-${link.id}`}>
               {link.description}
             </p>
           )}

@@ -44,6 +44,25 @@
   --font-serif: Georgia, serif;
   --font-mono: Menlo, monospace;
   --radius: 1rem;
+
+  /* Dynamic theme variables */
+  --font-heading: var(--font-sans);
+  --font-body: var(--font-sans);
+  --bg-gradient-start: hsl(48 100% 81%);
+  --bg-gradient-end: #FFD89B;
+  --bg-gradient-angle: 135deg;
+  --bg-gradient: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+  --card-gradient-start: hsl(0 0% 100%);
+  --card-gradient-end: hsl(0 0% 100%);
+  --card-gradient-angle: 0deg;
+  --card-gradient: var(--card-gradient-start);
+  --button-gradient-start: hsl(258 89% 66%);
+  --button-gradient-end: hsl(250 100% 80%);
+  --button-gradient-angle: 135deg;
+  --button-gradient: linear-gradient(135deg, var(--button-gradient-start), var(--button-gradient-end));
+  --shadow-intensity: 0.15;
+  --spacing: 1rem;
+  --card-style: elevated;
 }
 
 .dark {
@@ -77,8 +96,8 @@
   }
 
   body {
-    @apply font-sans antialiased bg-cream text-charcoal;
-    background: linear-gradient(135deg, var(--cream) 0%, #FFD89B 100%);
+    @apply font-sans antialiased text-charcoal;
+    background: var(--bg-gradient);
     min-height: 100vh;
   }
 
@@ -138,5 +157,63 @@
 
   .dragging {
     opacity: 0.5;
+  }
+
+  /* Theme-aware utility classes */
+  .theme-card {
+    background: var(--card-gradient);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, calc(var(--shadow-intensity) * 0.1)), 
+                0 2px 4px -1px rgba(0, 0, 0, calc(var(--shadow-intensity) * 0.06));
+  }
+
+  .theme-card.elevated {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, calc(var(--shadow-intensity) * 0.1)), 
+                0 4px 6px -2px rgba(0, 0, 0, calc(var(--shadow-intensity) * 0.05));
+  }
+
+  .theme-card.flat {
+    box-shadow: none;
+    border: 1px solid var(--border);
+  }
+
+  .theme-card.outlined {
+    box-shadow: none;
+    border: 2px solid var(--border);
+  }
+
+  .theme-button {
+    background: var(--button-gradient);
+    border-radius: var(--radius);
+    transition: all 0.2s ease;
+  }
+
+  .theme-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, calc(var(--shadow-intensity) * 0.2));
+  }
+
+  .theme-spacing-compact {
+    padding: calc(var(--spacing) * 0.5);
+  }
+
+  .theme-spacing-normal {
+    padding: var(--spacing);
+  }
+
+  .theme-spacing-spacious {
+    padding: calc(var(--spacing) * 1.5);
+  }
+
+  .theme-font-heading {
+    font-family: var(--font-heading);
+  }
+
+  .theme-font-body {
+    font-family: var(--font-body);
+  }
+
+  .theme-font-display {
+    font-family: var(--font-display);
   }
 }

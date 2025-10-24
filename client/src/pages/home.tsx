@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { LogIn } from "lucide-react";
 import ProfileSection from "@/components/profile-section";
 import SocialLinksList from "@/components/social-links-list";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import { type Profile, type SocialLink } from "@shared/schema";
 
 interface ProfileData {
@@ -87,7 +88,8 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen py-8 px-4 bg-gray-50">
+    <ThemeProvider profileId={data.profile.id}>
+      <div className="min-h-screen py-8 px-4 bg-gray-50">
       {/* Login Button for Visitors */}
       <div className="fixed top-5 right-5 z-50">
         <Button
@@ -184,5 +186,6 @@ export default function Home() {
         </div>
       </div>
     </div>
+    </ThemeProvider>
   );
 }
