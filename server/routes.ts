@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
+import { randomUUID } from "crypto";
 import { storage } from "./storage";
 import authRoutes from "./auth";
 import { 
@@ -11,7 +12,8 @@ import {
   updateSocialLinkSchema,
   reorderLinksSchema,
   insertThemeSchema,
-  updateThemeSchema
+  updateThemeSchema,
+  type Theme
 } from "@shared/schema";
 import { presetThemes } from "./presetThemes";
 import { z } from "zod";
@@ -269,8 +271,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const theme = await storage.getActiveTheme(profileId);
       
       if (!theme) {
-        // Return default theme if no custom theme exists
-        return res.json(presetThemes[0]);
+        // Construct a full Theme object from preset theme data
+        const presetTheme = presetThemes[0];
+        const defaultTheme: Theme = {
+          id: randomUUID(),
+          profileId: profileId,
+          name: presetTheme.name,
+          isActive: false, // Not an active custom theme, just a fallback
+          colors: presetTheme.colors,
+          gradients: presetTheme.gradients,
+          fonts: presetTheme.fonts,
+          layout: presetTheme.layout,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+        return res.json(defaultTheme);
       }
       
       res.json(theme);
