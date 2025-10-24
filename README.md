@@ -356,7 +356,7 @@ If you find this project useful, please consider giving it a star! It helps us r
 <div align="center">
 
 **Made with ❤️ by the open-source community**
-
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/WizzyWeb/biolink?utm_source=oss&utm_medium=github&utm_campaign=WizzyWeb%2Fbiolink&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 [⬆ Back to Top](#biolink--open-source-link-in-bio-platform)
 
 </div>
