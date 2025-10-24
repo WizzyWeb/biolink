@@ -54,6 +54,19 @@ export const socialLinks = pgTable("social_links", {
   clicks: integer("clicks").default(0),
 });
 
+export const themes = pgTable("themes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  profileId: varchar("profile_id").notNull().references(() => profiles.id),
+  name: text("name").notNull(),
+  isActive: boolean("is_active").default(false),
+  colors: jsonb("colors").notNull(),
+  gradients: jsonb("gradients").notNull(),
+  fonts: jsonb("fonts").notNull(),
+  layout: jsonb("layout").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertProfileSchema = createInsertSchema(profiles).omit({
   id: true,
   profileViews: true,
@@ -76,11 +89,87 @@ export const reorderLinksSchema = z.object({
   linkIds: z.array(z.string()),
 });
 
+// Theme schemas
+export const themeColorsSchema = z.object({
+  primary: z.string(),
+  primaryForeground: z.string(),
+  secondary: z.string(),
+  secondaryForeground: z.string(),
+  accent: z.string(),
+  accentForeground: z.string(),
+  background: z.string(),
+  foreground: z.string(),
+  card: z.string(),
+  cardForeground: z.string(),
+  muted: z.string(),
+  mutedForeground: z.string(),
+  border: z.string(),
+  input: z.string(),
+  ring: z.string(),
+});
+
+export const themeGradientsSchema = z.object({
+  background: z.object({
+    enabled: z.boolean(),
+    start: z.string(),
+    end: z.string(),
+    angle: z.number(),
+  }),
+  card: z.object({
+    enabled: z.boolean(),
+    start: z.string(),
+    end: z.string(),
+    angle: z.number(),
+  }),
+  button: z.object({
+    enabled: z.boolean(),
+    start: z.string(),
+    end: z.string(),
+    angle: z.number(),
+  }),
+});
+
+export const themeFontsSchema = z.object({
+  heading: z.string(),
+  body: z.string(),
+  display: z.string(),
+  headingColor: z.string(),
+  bodyColor: z.string(),
+  displayColor: z.string(),
+});
+
+export const themeLayoutSchema = z.object({
+  borderRadius: z.number(),
+  cardStyle: z.enum(["elevated", "flat", "outlined"]),
+  spacing: z.enum(["compact", "normal", "spacious"]),
+  shadowIntensity: z.number(),
+});
+
+export const insertThemeSchema = z.object({
+  profileId: z.string(),
+  name: z.string(),
+  colors: themeColorsSchema,
+  gradients: themeGradientsSchema,
+  fonts: themeFontsSchema,
+  layout: themeLayoutSchema,
+});
+
+export const updateThemeSchema = insertThemeSchema.partial().extend({
+  id: z.string(),
+});
+
 export type User = typeof users.$inferSelect;
 export type UpsertUser = typeof users.$inferInsert;
 export type Profile = typeof profiles.$inferSelect;
 export type SocialLink = typeof socialLinks.$inferSelect;
+export type Theme = typeof themes.$inferSelect;
 export type InsertProfile = z.infer<typeof insertProfileSchema>;
 export type InsertSocialLink = z.infer<typeof insertSocialLinkSchema>;
 export type UpdateProfile = z.infer<typeof updateProfileSchema>;
 export type UpdateSocialLink = z.infer<typeof updateSocialLinkSchema>;
+export type InsertTheme = z.infer<typeof insertThemeSchema>;
+export type UpdateTheme = z.infer<typeof updateThemeSchema>;
+export type ThemeColors = z.infer<typeof themeColorsSchema>;
+export type ThemeGradients = z.infer<typeof themeGradientsSchema>;
+export type ThemeFonts = z.infer<typeof themeFontsSchema>;
+export type ThemeLayout = z.infer<typeof themeLayoutSchema>;

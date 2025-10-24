@@ -1,6 +1,6 @@
-import { type User, type UpsertUser, type Profile, type SocialLink, type InsertProfile, type InsertSocialLink, type UpdateProfile, type UpdateSocialLink, users, profiles, socialLinks } from "@shared/schema";
+import { type User, type UpsertUser, type Profile, type SocialLink, type Theme, type InsertProfile, type InsertSocialLink, type UpdateProfile, type UpdateSocialLink, type InsertTheme, type UpdateTheme, users, profiles, socialLinks, themes } from "@shared/schema";
 import { db } from "./db";
-import { eq, asc, sql } from "drizzle-orm";
+import { eq, asc, sql, and } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -31,6 +31,14 @@ export interface IStorage {
   deleteSocialLink(id: string): Promise<boolean>;
   reorderSocialLinks(linkIds: string[]): Promise<void>;
   incrementIndividualLinkClick(linkId: string): Promise<void>;
+
+  // Theme methods
+  getActiveTheme(profileId: string): Promise<Theme | undefined>;
+  getTheme(id: string): Promise<Theme | undefined>;
+  createTheme(theme: InsertTheme): Promise<Theme>;
+  updateTheme(id: string, updates: Partial<UpdateTheme>): Promise<Theme | undefined>;
+  deleteTheme(id: string): Promise<boolean>;
+  activateTheme(themeId: string, profileId: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -217,6 +225,73 @@ export class DatabaseStorage implements IStorage {
       .update(socialLinks)
       .set({ clicks: sql`${socialLinks.clicks} + 1` })
       .where(eq(socialLinks.id, linkId));
+  }
+
+  // Theme methods
+  async getActiveTheme(profileId: string): Promise<Theme | undefined> {
+    const [theme] = await db
+      .select()
+      .from(themes)
+      .where(and(eq(themes.profileId, profileId), eq(themes.isActive, true)));
+    return theme || undefined;
+  }
+
+  async getTheme(id: string): Promise<Theme | undefined> {
+    const [theme] = await db.select().from(themes).where(eq(themes.id, id));
+    return theme || undefined;
+  }
+
+  async createTheme(insertTheme: InsertTheme): Promise<Theme> {
+    const [theme] = await db
+      .insert(themes)
+      .values(insertTheme)
+      .returning();
+    return theme;
+  }
+
+  async updateTheme(id: string, updates: Partial<UpdateTheme>): Promise<Theme | undefined> {
+    const [theme] = await db
+      .update(themes)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(themes.id, id))
+      .returning();
+    return theme || undefined;
+  }
+
+  async deleteTheme(id: string): Promise<boolean> {
+    const result = await db
+      .delete(themes)
+      .where(eq(themes.id, id))
+      .returning();
+    return result.length > 0;
+  }
+
+  async activateTheme(themeId: string, profileId: string): Promise<void> {
+    await db.transaction(async (tx) => {
+      // First, deactivate all themes for this profile and update timestamp
+      await tx
+        .update(themes)
+        .set({ 
+          isActive: false,
+          updatedAt: new Date()
+        })
+        .where(eq(themes.profileId, profileId));
+
+      // Then activate the selected theme (ensuring it belongs to the profile) and update timestamp
+      await tx
+        .update(themes)
+        .set({ 
+          isActive: true,
+          updatedAt: new Date()
+        })
+        .where(and(
+          eq(themes.id, themeId),
+          eq(themes.profileId, profileId)
+        ));
+    });
   }
 }
 
