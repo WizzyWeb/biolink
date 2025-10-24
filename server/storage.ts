@@ -1,6 +1,6 @@
 import { type User, type UpsertUser, type Profile, type SocialLink, type Theme, type InsertProfile, type InsertSocialLink, type UpdateProfile, type UpdateSocialLink, type InsertTheme, type UpdateTheme, type CreateBioPage, type UpdateBioPage, users, profiles, socialLinks, themes } from "@shared/schema";
 import { db } from "./db";
-import { eq, asc, sql, and } from "drizzle-orm";
+import { eq, asc, sql, and, ne } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -234,7 +234,7 @@ export class DatabaseStorage implements IStorage {
       const otherProfiles = await db
         .select()
         .from(profiles)
-        .where(and(eq(profiles.userId, userId), eq(profiles.id, sql`${profiles.id} != ${id}`)))
+        .where(and(eq(profiles.userId, userId), ne(profiles.id, id)))
         .limit(1);
 
       if (otherProfiles.length > 0) {
@@ -261,10 +261,16 @@ export class DatabaseStorage implements IStorage {
         .where(eq(profiles.userId, userId));
 
       // Then set the specified page as default
-      await tx
+      const result = await tx
         .update(profiles)
         .set({ isDefault: true, updatedAt: new Date() })
-        .where(and(eq(profiles.id, id), eq(profiles.userId, userId)));
+        .where(and(eq(profiles.id, id), eq(profiles.userId, userId)))
+        .returning();
+
+      // Verify that the update actually affected a row
+      if (result.length === 0) {
+        throw new Error("Profile not found or does not belong to user");
+      }
     });
   }
 

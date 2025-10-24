@@ -155,7 +155,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Forbidden: You can only edit your own bio pages" });
       }
       
-      const updates = updateBioPageSchema.parse({ id, ...req.body });
+      // Validate the ID parameter
+      if (!id || typeof id !== 'string') {
+        return res.status(400).json({ message: "Invalid bio page ID" });
+      }
+      
+      const updates = updateBioPageSchema.parse(req.body);
       
       // If updating page name, check if it's available
       if (updates.pageName && updates.pageName !== existingProfile.pageName) {

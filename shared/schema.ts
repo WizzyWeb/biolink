@@ -101,9 +101,7 @@ export const createBioPageSchema = z.object({
 });
 
 // Schema for updating bio page
-export const updateBioPageSchema = createBioPageSchema.partial().extend({
-  id: z.string(),
-});
+export const updateBioPageSchema = createBioPageSchema.partial();
 
 export const updateSocialLinkSchema = insertSocialLinkSchema.partial().extend({
   id: z.string(),
