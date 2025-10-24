@@ -236,8 +236,16 @@ export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeB
                   <Card key={gradientType}>
                     <CardHeader>
                       <CardTitle className="capitalize text-sm">
-                        {gradientType} Gradient
+                        {gradientType === 'background' ? 'Full Page Background Gradient' : 
+                         gradientType === 'card' ? 'Card Background Gradient' :
+                         gradientType === 'button' ? 'Button Gradient' : 
+                         `${gradientType} Gradient`}
                       </CardTitle>
+                      {gradientType === 'background' && (
+                        <p className="text-xs text-gray-600 mt-1">
+                          This gradient will be applied to the entire page background
+                        </p>
+                      )}
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="flex items-center space-x-2">

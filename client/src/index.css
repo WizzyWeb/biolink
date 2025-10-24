@@ -97,7 +97,13 @@
 
   body {
     @apply font-sans antialiased text-charcoal;
-    background: var(--bg-gradient);
+    background: var(--bg-gradient) !important;
+    min-height: 100vh;
+  }
+
+  /* Ensure the background gradient is applied to the root element as well */
+  html {
+    background: var(--bg-gradient) !important;
     min-height: 100vh;
   }
 

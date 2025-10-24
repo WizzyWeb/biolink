@@ -135,9 +135,12 @@ export function ThemeProvider({ children, profileId }: ThemeProviderProps) {
       root.style.setProperty('--bg-gradient-start', gradients.background.start);
       root.style.setProperty('--bg-gradient-end', gradients.background.end);
       root.style.setProperty('--bg-gradient-angle', `${gradients.background.angle}deg`);
-      root.style.setProperty('--bg-gradient', `linear-gradient(${gradients.background.angle}deg, ${gradients.background.start}, ${gradients.background.end})`);
+      const gradientValue = `linear-gradient(${gradients.background.angle}deg, ${gradients.background.start}, ${gradients.background.end})`;
+      root.style.setProperty('--bg-gradient', gradientValue);
+      console.log('Applied background gradient:', gradientValue);
     } else {
       root.style.setProperty('--bg-gradient', gradients.background.start);
+      console.log('Applied background color:', gradients.background.start);
     }
 
     // Card gradient

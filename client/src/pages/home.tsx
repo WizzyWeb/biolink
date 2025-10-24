@@ -98,7 +98,7 @@ export default function Home() {
 
   return (
     <ThemeProvider profileId={data.profile.id}>
-      <div className="min-h-screen py-8 px-4 bg-gray-50">
+      <div className="min-h-screen py-8 px-4">
       {/* Login Button for Visitors */}
       <div className="fixed top-5 right-5 z-50">
         <Button
