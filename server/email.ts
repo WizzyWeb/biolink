@@ -24,9 +24,10 @@ const transporter = nodemailer.createTransport({
 });
 
 const SMTP_FROM = process.env.SMTP_FROM || process.env.SMTP_USER || "noreply@linkboard.com";
-const APP_URL = process.env.REPLIT_DOMAINS?.split(",")[0] 
-  ? `https://${process.env.REPLIT_DOMAINS.split(",")[0]}`
-  : process.env.APP_URL || "http://localhost:3000";
+const APP_URL = process.env.APP_URL || 
+  (process.env.REPLIT_DOMAINS?.split(",")[0] 
+    ? `https://${process.env.REPLIT_DOMAINS.split(",")[0]}`
+    : "http://localhost:3000");
 
 // Get default email template data
 const getEmailData = (): EmailTemplateData => getDefaultEmailData(APP_URL);
