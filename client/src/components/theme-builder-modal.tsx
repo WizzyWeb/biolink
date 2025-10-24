@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { useTheme } from '@/contexts/ThemeContext';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
-import { Palette, Gradient, Type, Layout, Sparkles, Save, RotateCcw } from 'lucide-react';
+import { Palette, Paintbrush, Type, Layout, Sparkles, Save, RotateCcw } from 'lucide-react';
 import { type Theme, type ThemeColors, type ThemeGradients, type ThemeFonts, type ThemeLayout } from '@shared/schema';
 
 interface ThemeBuilderModalProps {
@@ -56,14 +56,21 @@ export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeB
   }, [isOpen]);
 
   const fetchPresetThemes = async () => {
+    setIsLoading(true);
     try {
       const response = await apiRequest('GET', '/api/themes/presets');
       if (response.ok) {
         const presets = await response.json();
-        setPresetThemes(presets);
+        setPresetThemes(Array.isArray(presets) ? presets : []);
+      } else {
+        console.error('Failed to fetch preset themes:', response.statusText);
+        setPresetThemes([]);
       }
     } catch (error) {
       console.error('Failed to fetch preset themes:', error);
+      setPresetThemes([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -164,7 +171,7 @@ export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeB
                   Colors
                 </TabsTrigger>
                 <TabsTrigger value="gradients" className="flex items-center gap-2">
-                  <Gradient className="w-4 h-4" />
+                  <Paintbrush className="w-4 h-4" />
                   Gradients
                 </TabsTrigger>
                 <TabsTrigger value="fonts" className="flex items-center gap-2">
@@ -361,38 +368,49 @@ export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeB
               </TabsContent>
 
               <TabsContent value="presets" className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  {presetThemes.map((preset) => (
-                    <Card 
-                      key={preset.name} 
-                      className="cursor-pointer hover:shadow-md transition-shadow"
-                      onClick={() => handlePresetSelect(preset)}
-                    >
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-sm">{preset.name}</CardTitle>
-                      </CardHeader>
-                      <CardContent className="pt-0">
-                        <div className="flex gap-1 mb-2">
-                          <div 
-                            className="w-4 h-4 rounded-full border"
-                            style={{ backgroundColor: preset.colors.primary }}
-                          />
-                          <div 
-                            className="w-4 h-4 rounded-full border"
-                            style={{ backgroundColor: preset.colors.secondary }}
-                          />
-                          <div 
-                            className="w-4 h-4 rounded-full border"
-                            style={{ backgroundColor: preset.colors.accent }}
-                          />
-                        </div>
-                        <Badge variant="outline" className="text-xs">
-                          {preset.layout.cardStyle}
-                        </Badge>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                {isLoading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p className="text-sm text-gray-600">Loading preset themes...</p>
+                  </div>
+                ) : Array.isArray(presetThemes) && presetThemes.length > 0 ? (
+                  <div className="grid grid-cols-2 gap-4">
+                    {presetThemes.map((preset) => (
+                      <Card 
+                        key={preset.name} 
+                        className="cursor-pointer hover:shadow-md transition-shadow"
+                        onClick={() => handlePresetSelect(preset)}
+                      >
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-sm">{preset.name}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          <div className="flex gap-1 mb-2">
+                            <div 
+                              className="w-4 h-4 rounded-full border"
+                              style={{ backgroundColor: preset.colors.primary }}
+                            />
+                            <div 
+                              className="w-4 h-4 rounded-full border"
+                              style={{ backgroundColor: preset.colors.secondary }}
+                            />
+                            <div 
+                              className="w-4 h-4 rounded-full border"
+                              style={{ backgroundColor: preset.colors.accent }}
+                            />
+                          </div>
+                          <Badge variant="outline" className="text-xs">
+                            {preset.layout.cardStyle}
+                          </Badge>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-sm text-gray-600">No preset themes available</p>
+                  </div>
+                )}
               </TabsContent>
             </Tabs>
           </div>
