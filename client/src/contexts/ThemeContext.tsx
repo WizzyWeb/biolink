@@ -116,9 +116,20 @@ export function ThemeProvider({ children, profileId }: ThemeProviderProps) {
   const applyTheme = (themeToApply: Theme) => {
     const root = document.documentElement;
     
+    // Helper function to convert camelCase to kebab-case
+    const toKebabCase = (str: string): string => {
+      return str
+        .replace(/([A-Z])/g, '-$1') // Add hyphen before capital letters
+        .toLowerCase() // Convert to lowercase
+        .replace(/^-/, '') // Remove leading hyphen if any
+        .replace(/-+/g, '-') // Normalize multiple hyphens to single
+        .trim(); // Remove any spaces
+    };
+    
     // Apply colors
     Object.entries(themeToApply.colors).forEach(([key, value]) => {
-      root.style.setProperty(`--${key}`, value);
+      const kebabKey = toKebabCase(key);
+      root.style.setProperty(`--${kebabKey}`, value);
     });
 
     // Apply gradients
