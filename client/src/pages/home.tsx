@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { LogIn } from "lucide-react";
 import ProfileSection from "@/components/profile-section";
 import SocialLinksList from "@/components/social-links-list";
-import { ThemeProvider } from "@/contexts/ThemeContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import { type Profile, type SocialLink } from "@shared/schema";
 
 interface ProfileData {
@@ -24,6 +24,7 @@ interface ProfileData {
  */
 export default function Home() {
   const { username } = useParams<{ username?: string }>();
+  const { setProfileId } = useTheme();
 
   const profileUsername = username;
 
@@ -31,6 +32,13 @@ export default function Home() {
     queryKey: ["/api/profile", profileUsername],
     enabled: !!profileUsername && profileUsername !== undefined,
   });
+
+  // Set profile ID in theme context when data is loaded
+  useEffect(() => {
+    if (data?.profile?.id) {
+      setProfileId(data.profile.id);
+    }
+  }, [data?.profile?.id, setProfileId]);
 
   if (!profileUsername) {
     window.location.href = "/";
@@ -97,8 +105,7 @@ export default function Home() {
   }
 
   return (
-    <ThemeProvider profileId={data.profile.id}>
-      <div className="min-h-screen py-8 px-4">
+    <div className="min-h-screen py-8 px-4">
       {/* Login Button for Visitors */}
       <div className="fixed top-5 right-5 z-50">
         <Button
@@ -195,6 +202,5 @@ export default function Home() {
         </div>
       </div>
     </div>
-    </ThemeProvider>
   );
 }

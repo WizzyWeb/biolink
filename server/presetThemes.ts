@@ -24,7 +24,7 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       background: {
         enabled: true,
         start: "hsl(48 100% 81%)",
-        end: "#FFD89B",
+        end: "hsl(48 100% 81%)",
         angle: 135,
       },
       card: {

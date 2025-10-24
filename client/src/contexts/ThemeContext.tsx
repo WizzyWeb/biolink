@@ -13,6 +13,7 @@ interface ThemeContextType {
   updateThemeGradients: (gradients: Partial<ThemeGradients>) => void;
   updateThemeFonts: (fonts: Partial<ThemeFonts>) => void;
   updateThemeLayout: (layout: Partial<ThemeLayout>) => void;
+  setProfileId: (profileId: string) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -26,6 +27,7 @@ export function ThemeProvider({ children, profileId }: ThemeProviderProps) {
   const [theme, setThemeState] = useState<Theme | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentProfileId, setCurrentProfileId] = useState<string | undefined>(profileId);
 
   // Default theme fallback
   const defaultTheme: Theme = {
@@ -90,13 +92,13 @@ export function ThemeProvider({ children, profileId }: ThemeProviderProps) {
 
   // Fetch theme on mount
   useEffect(() => {
-    if (profileId) {
-      fetchTheme(profileId);
+    if (currentProfileId) {
+      fetchTheme(currentProfileId);
     } else {
       setThemeState(defaultTheme);
       applyTheme(defaultTheme);
     }
-  }, [profileId]);
+  }, [currentProfileId]);
 
   const fetchTheme = async (profileId: string) => {
     setIsLoading(true);
@@ -253,6 +255,7 @@ export function ThemeProvider({ children, profileId }: ThemeProviderProps) {
     updateThemeGradients,
     updateThemeFonts,
     updateThemeLayout,
+    setProfileId: setCurrentProfileId,
   };
 
   return (
