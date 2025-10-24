@@ -35,6 +35,7 @@ fi
 version_file="$CODACY_CLI_V2_TMP_FOLDER/version.yaml"
 
 
+# get_version_from_yaml reads the version value from the version file and echoes it; returns failure if no version is found.
 get_version_from_yaml() {
     if [ -f "$version_file" ]; then
         local version=$(grep -o 'version: *"[^"]*"' "$version_file" | cut -d'"' -f2)
@@ -46,6 +47,8 @@ get_version_from_yaml() {
     return 1
 }
 
+# get_latest_version queries the GitHub Releases API for codacy/codacy-cli-v2, extracts the latest release `tag_name`, and echoes that tag (e.g., `v1.2.3`).
+# If `GH_TOKEN` is set it is used for authentication; rate-limit responses are delegated to `handle_rate_limit`.
 get_latest_version() {
     local response
     if [ -n "$GH_TOKEN" ]; then
@@ -59,6 +62,7 @@ get_latest_version() {
     echo "$version"
 }
 
+# handle_rate_limit checks a GitHub API response for an "API rate limit exceeded" message and aborts with a fatal error if present.
 handle_rate_limit() {
     local response="$1"
     if echo "$response" | grep -q "API rate limit exceeded"; then
@@ -66,6 +70,8 @@ handle_rate_limit() {
     fi
 }
 
+# download_file downloads the file at the given URL into the current directory using curl or wget.
+# It echoes the download URL and exits with a fatal error if neither `curl` nor `wget` is available.
 download_file() {
     local url="$1"
 
@@ -79,6 +85,7 @@ download_file() {
     fi
 }
 
+# download downloads the resource at the given URL into the specified output_folder using download_file.
 download() {
     local url="$1"
     local output_folder="$2"
@@ -86,6 +93,8 @@ download() {
     ( cd "$output_folder" && download_file "$url" )
 }
 
+# download_cli downloads and extracts the Codacy CLI tarball for the specified version into the target folder if the binary at the given path does not already exist.
+# Arguments: bin_folder — directory to place and extract the tarball; bin_path — expected path of the CLI binary to check; version — release tag used to construct the download URL.
 download_cli() {
     # OS name lower case
     suffix=$(echo "$os_name" | tr '[:upper:]' '[:lower:]')
