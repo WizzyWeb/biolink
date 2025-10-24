@@ -228,4 +228,16 @@
     font-family: var(--font-display);
     color: var(--font-display-color);
   }
+
+  .theme-font-heading-color {
+    color: var(--font-heading-color);
+  }
+
+  .theme-font-body-color {
+    color: var(--font-body-color);
+  }
+
+  .theme-font-display-color {
+    color: var(--font-display-color);
+  }
 }

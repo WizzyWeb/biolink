@@ -50,11 +50,11 @@ export default function LinkCard({ link, isEditMode, onDelete, onEdit, onClick }
           {icon}
         </div>
         <div className="flex-1">
-          <h3 className="text-lg theme-font-body font-semibold text-charcoal" data-testid={`text-title-${link.id}`}>
+          <h3 className="text-lg theme-font-body font-semibold theme-font-body-color" data-testid={`text-title-${link.id}`}>
             {link.title}
           </h3>
           {link.description && (
-            <p className="text-sm text-gray-500 theme-font-body" data-testid={`text-description-${link.id}`}>
+            <p className="text-sm theme-font-body theme-font-body-color opacity-80" data-testid={`text-description-${link.id}`}>
               {link.description}
             </p>
           )}

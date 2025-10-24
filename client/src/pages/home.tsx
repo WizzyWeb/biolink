@@ -88,8 +88,8 @@ export default function Home() {
       <div className="min-h-screen py-8 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <div className="bg-white rounded-card shadow-lg p-8">
-            <h1 className="text-2xl font-bold text-charcoal mb-4">Profile Not Found</h1>
-            <p className="text-gray-600">The requested profile could not be found.</p>
+            <h1 className="text-2xl font-bold mb-4 theme-font-heading-color">Profile Not Found</h1>
+            <p className="theme-font-body-color">The requested profile could not be found.</p>
           </div>
         </div>
       </div>
@@ -103,7 +103,7 @@ export default function Home() {
       <div className="fixed top-5 right-5 z-50">
         <Button
           onClick={() => window.location.href = "/login"}
-          className="bg-white hover:bg-gray-100 text-charcoal px-6 py-3 rounded-full shadow-lg font-semibold flex items-center gap-2 border border-gray-200"
+          className="bg-white hover:bg-gray-100 px-6 py-3 rounded-full shadow-lg font-semibold flex items-center gap-2 border border-gray-200 theme-font-body-color"
           data-testid="button-login"
         >
           <LogIn className="w-5 h-5" />
@@ -127,7 +127,7 @@ export default function Home() {
 
         {/* Share Section */}
         <div className="mt-8 bg-white rounded-card shadow-lg p-6 text-center">
-          <h3 className="text-xl font-display font-bold text-charcoal mb-4">Share Your Profile</h3>
+          <h3 className="text-xl font-display font-bold mb-4 theme-font-display-color">Share Your Profile</h3>
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1 flex gap-2">
               <input
@@ -135,7 +135,7 @@ export default function Home() {
                 value={`${window.location.origin}/${profileUsername}`}
                 aria-label="Profile URL"
                 readOnly
-                className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-card font-sans text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-card font-sans focus:outline-none focus:ring-2 focus:ring-primary theme-font-body-color"
                 data-testid="input-share-url"
               />
               <Button
@@ -182,7 +182,7 @@ export default function Home() {
 
         {/* Footer */}
         <div className="mt-8 text-center">
-          <p className="text-gray-600 font-sans text-sm mb-2">
+          <p className="font-sans text-sm mb-2 theme-font-body-color">
             Powered by <span className="font-semibold text-primary">LinkHub</span> - Free & Open Source
           </p>
           <Button

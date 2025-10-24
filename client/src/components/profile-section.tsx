@@ -24,10 +24,10 @@ export default function ProfileSection({ profile, isEditMode, onEditProfile }: P
 
       {/* Profile Info */}
       <div className="space-y-3">
-        <h1 className="text-3xl md:text-4xl theme-font-display font-bold text-charcoal" data-testid="text-display-name">
+        <h1 className="text-3xl md:text-4xl theme-font-display font-bold theme-font-display-color" data-testid="text-display-name">
           {profile.displayName}
         </h1>
-        <p className="text-base md:text-lg text-gray-600 theme-font-body max-w-md mx-auto whitespace-pre-line" data-testid="text-bio">
+        <p className="text-base md:text-lg theme-font-body max-w-md mx-auto whitespace-pre-line theme-font-body-color" data-testid="text-bio">
           {profile.bio}
         </p>
       </div>
@@ -38,13 +38,13 @@ export default function ProfileSection({ profile, isEditMode, onEditProfile }: P
           <div className="text-2xl font-display font-bold text-primary" data-testid="text-profile-views">
             {profile.profileViews?.toLocaleString() || "0"}
           </div>
-          <div className="text-sm text-gray-500 font-sans">Profile Views</div>
+          <div className="text-sm font-sans theme-font-body-color">Profile Views</div>
         </div>
         <div className="text-center">
           <div className="text-2xl font-display font-bold text-secondary" data-testid="text-link-clicks">
             {profile.linkClicks?.toLocaleString() || "0"}
           </div>
-          <div className="text-sm text-gray-500 font-sans">Link Clicks</div>
+          <div className="text-sm font-sans theme-font-body-color">Link Clicks</div>
         </div>
       </div>
 
