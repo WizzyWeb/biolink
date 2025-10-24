@@ -7,9 +7,21 @@ interface ProfileSectionProps {
   onEditProfile: () => void;
 }
 
+/**
+ * Renders a themed profile card displaying an image, display name, bio, social stats, and an optional edit action.
+ *
+ * The component shows a profile image (falls back to a default image when `profile.profileImageUrl` is missing),
+ * the profile's display name and bio, and localized counts for profile views and link clicks (falls back to "0").
+ * When `isEditMode` is true, a full-width edit button is rendered and invokes `onEditProfile` when clicked.
+ *
+ * @param profile - Profile data; should include `displayName`, `bio`, and optional `profileImageUrl`, `profileViews`, and `linkClicks`.
+ * @param isEditMode - If true, shows the "Edit Profile Details" button.
+ * @param onEditProfile - Callback invoked when the edit button is clicked.
+ * @returns A JSX element representing the profile card.
+ */
 export default function ProfileSection({ profile, isEditMode, onEditProfile }: ProfileSectionProps) {
   return (
-    <div className="profile-card bg-white rounded-card shadow-lg p-8 mb-6 text-center">
+    <div className="profile-card theme-card theme-spacing-normal mb-6 text-center">
       {/* Profile Image */}
       <div className="mb-6 flex justify-center">
         <div className="gradient-border">
@@ -24,10 +36,10 @@ export default function ProfileSection({ profile, isEditMode, onEditProfile }: P
 
       {/* Profile Info */}
       <div className="space-y-3">
-        <h1 className="text-3xl md:text-4xl font-display font-bold text-charcoal" data-testid="text-display-name">
+        <h1 className="text-3xl md:text-4xl theme-font-display font-bold text-charcoal" data-testid="text-display-name">
           {profile.displayName}
         </h1>
-        <p className="text-base md:text-lg text-gray-600 font-sans max-w-md mx-auto whitespace-pre-line" data-testid="text-bio">
+        <p className="text-base md:text-lg text-gray-600 theme-font-body max-w-md mx-auto whitespace-pre-line" data-testid="text-bio">
           {profile.bio}
         </p>
       </div>
