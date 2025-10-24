@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const SMTP_FROM = process.env.SMTP_FROM || process.env.SMTP_USER || "noreply@linkhub.com";
+const SMTP_FROM = process.env.SMTP_FROM || process.env.SMTP_USER || "noreply@LinkBoard.com";
 const APP_URL = process.env.REPLIT_DOMAINS?.split(",")[0] 
   ? `https://${process.env.REPLIT_DOMAINS.split(",")[0]}`
   : process.env.APP_URL || "http://localhost:3000";
@@ -85,12 +85,12 @@ const getEmailTemplate = (content: string) => `
 <body>
   <div class="container">
     <div class="header">
-      <div class="logo">🔗 LinkHub</div>
+      <div class="logo">🔗 LinkBoard</div>
     </div>
     ${content}
     <div class="footer">
-      <p>This is an automated email from LinkHub. Please do not reply to this email.</p>
-      <p>&copy; ${new Date().getFullYear()} LinkHub. All rights reserved.</p>
+      <p>This is an automated email from LinkBoard. Please do not reply to this email.</p>
+      <p>&copy; ${new Date().getFullYear()} LinkBoard. All rights reserved.</p>
     </div>
   </div>
 </body>
@@ -125,7 +125,7 @@ export async function sendEmail({ to, subject, html }: SendEmailOptions) {
     }
 
     const info = await transporter.sendMail({
-      from: `"LinkHub" <${SMTP_FROM}>`,
+      from: `"LinkBoard" <${SMTP_FROM}>`,
       to,
       subject,
       html: getEmailTemplate(html),
@@ -150,7 +150,7 @@ export async function sendVerificationEmail(email: string, token: string) {
   const verificationUrl = `${APP_URL}/verify-email?token=${token}`;
   
   const html = `
-    <h2>Welcome to LinkHub!</h2>
+    <h2>Welcome to LinkBoard!</h2>
     <p>Thank you for creating an account. Please verify your email address to get started.</p>
     <p style="text-align: center;">
       <a href="${verificationUrl}" class="button">Verify Email Address</a>
@@ -158,13 +158,13 @@ export async function sendVerificationEmail(email: string, token: string) {
     <p>Or copy and paste this link into your browser:</p>
     <p style="word-break: break-all; color: #666; font-size: 14px;">${verificationUrl}</p>
     <p style="margin-top: 30px; color: #666; font-size: 14px;">
-      This link will expire in 24 hours. If you didn't create an account with LinkHub, you can safely ignore this email.
+      This link will expire in 24 hours. If you didn't create an account with LinkBoard, you can safely ignore this email.
     </p>
   `;
 
   return sendEmail({
     to: email,
-    subject: "Verify Your Email - LinkHub",
+    subject: "Verify Your Email - LinkBoard",
     html,
   });
 }
@@ -181,7 +181,7 @@ export async function sendPasswordResetEmail(email: string, token: string) {
   
   const html = `
     <h2>Password Reset Request</h2>
-    <p>We received a request to reset your password for your LinkHub account.</p>
+    <p>We received a request to reset your password for your LinkBoard account.</p>
     <p style="text-align: center;">
       <a href="${resetUrl}" class="button">Reset Password</a>
     </p>
@@ -194,7 +194,7 @@ export async function sendPasswordResetEmail(email: string, token: string) {
 
   return sendEmail({
     to: email,
-    subject: "Reset Your Password - LinkHub",
+    subject: "Reset Your Password - LinkBoard",
     html,
   });
 }
@@ -208,7 +208,7 @@ export async function sendWelcomeEmail(email: string, username: string) {
   const profileUrl = `${APP_URL}/${username}`;
   
   const html = `
-    <h2>Welcome to LinkHub! 🎉</h2>
+    <h2>Welcome to LinkBoard! 🎉</h2>
     <p>Your account has been successfully created and verified!</p>
     <p>Your profile is now live at:</p>
     <div class="code">${profileUrl}</div>
@@ -220,7 +220,7 @@ export async function sendWelcomeEmail(email: string, username: string) {
 
   return sendEmail({
     to: email,
-    subject: "Welcome to LinkHub!",
+    subject: "Welcome to LinkBoard!",
     html,
   });
 }

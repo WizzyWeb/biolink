@@ -129,7 +129,7 @@ export default function ResetPassword() {
           <Link href="/">
             <a className="inline-flex items-center gap-3 mb-2 hover:opacity-80 transition-opacity">
               <LinkIcon className="w-10 h-10 text-primary" />
-              <span className="text-3xl font-display font-bold text-charcoal">LinkHub</span>
+              <span className="text-3xl font-display font-bold text-charcoal">LinkBoard</span>
             </a>
           </Link>
           <p className="text-gray-600">Create a new password for your account</p>

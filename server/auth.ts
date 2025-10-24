@@ -196,7 +196,7 @@ router.get("/verify-email", async (req: Request, res: Response) => {
         userId: user.id,
         username,
         displayName,
-        bio: "Welcome to my LinkHub profile!",
+        bio: "Welcome to my LinkBoard profile!",
         profileImageUrl: user.profileImageUrl || null,
       });
 
