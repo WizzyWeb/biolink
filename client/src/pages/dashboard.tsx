@@ -12,6 +12,7 @@ import AddLinkModal from "@/components/add-link-modal";
 import EditProfileModal from "@/components/edit-profile-modal";
 import EditLinkModal from "@/components/edit-link-modal";
 import ThemeBuilderModal from "@/components/theme-builder-modal";
+import BioPagesManager from "@/components/bio-pages-manager";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { type Profile, type SocialLink } from "@shared/schema";
 import { useState } from "react";
@@ -53,8 +54,8 @@ export default function Dashboard() {
   }, [isAuthenticated, isLoading, toast]);
 
   const { data, isLoading: profileLoading } = useQuery<ProfileData>({
-    queryKey: ["/api/profile", user?.profile?.username],
-    enabled: !!user?.profile?.username,
+    queryKey: ["/api/profile", user?.profile?.pageName],
+    enabled: !!user?.profile?.pageName,
   });
 
   const handleLogout = async () => {
@@ -115,7 +116,7 @@ export default function Dashboard() {
               </a>
             </Link>
             <div className="hidden md:flex items-center gap-4">
-              <Link href={`/${user.profile.username}`}>
+              <Link href={`/${user.profile.pageName}`}>
                 <a className="text-gray-600 hover:text-charcoal transition-colors flex items-center gap-2">
                   <Eye className="w-4 h-4" />
                   <span>View Profile</span>
@@ -170,12 +171,17 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* Bio Pages Management */}
+        <div className="bg-white rounded-card shadow-lg p-6 mb-6">
+          <BioPagesManager userId={user.id} />
+        </div>
+
         {/* Profile Section */}
         <div className="bg-white rounded-card shadow-lg p-6 mb-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-display font-bold text-charcoal flex items-center gap-2">
               <Settings className="w-5 h-5 text-primary" />
-              Profile Settings
+              Current Page Settings
             </h2>
             <div className="flex gap-2">
               <Button

@@ -32,14 +32,17 @@
 - 📊 **Analytics Dashboard**: Profile views, link clicks, and engagement metrics
 - 🎨 **Modern UI**: Responsive design with Tailwind CSS and Radix UI
 - 📱 **Share Tools**: One-click copy and social media sharing
+- 🔐 **User Authentication**: Secure login and registration system
+- 🎨 **Theme Customization**: Custom themes with colors, gradients, fonts, and layouts
+- 📄 **Multiple Bio Pages**: Create and manage multiple bio pages per user account
 
 **Coming Soon (v2.0+):**
-- 🔐 Authentication & multi-user support
-- 🎨 Theme customization engine
 - 📈 Advanced analytics with geographic & device tracking
 - 💳 Payment integration (Stripe, PayPal)
 - 🛍️ E-commerce features
 - 📧 Email collection & marketing tools
+- 🔗 Custom domain support
+- 📱 Mobile applications
 
 [View all features →](./docs/FEATURES.md) | [See roadmap →](./docs/ROADMAP.md)
 
@@ -172,20 +175,20 @@ The production server serves static files from `dist/public` and the API under `
 
 ### Public Profiles
 
-- Visit `/{username}` to view a public profile. The project seeds `demo`, so `http://localhost:3000/demo` should work after seeding.
+- Visit `/{pageName}` to view a public profile. The project seeds `demo`, so `http://localhost:3000/demo` should work after seeding.
+- Each user can create multiple bio pages with unique names (e.g., `/personal`, `/business`, `/portfolio`)
 
-### Edit Mode (URL‑gated)
+### Dashboard & Management
 
-- To access edit controls on a profile page, append the query parameter `?edit=true`:
-
-```
-http://localhost:3000/{username}?edit=true
-```
-
-- When present, an Edit toggle appears in the top‑right. Toggle it to switch between View and Edit. In Edit mode you can:
-  - Update profile info
-  - Add/edit/delete/reorder links
-  - Navigate to the Analytics dashboard
+- Log in to access your dashboard at `/dashboard`
+- Create and manage multiple bio pages
+- Each page has its own:
+  - Display name and bio
+  - Social links
+  - Custom theme
+  - Analytics
+- Set one page as your default page
+- Switch between pages to edit different profiles
 
 ### Analytics
 
@@ -201,7 +204,12 @@ http://localhost:3000/{username}?edit=true
 
 Base URL: same origin as the client, under `/api`.
 
-- `GET /api/profile/:username` — returns `{ profile, links }` and increments profile views
+- `GET /api/profile/:pageName` — returns `{ profile, links }` and increments profile views
+- `GET /api/bio-pages` — get all bio pages for authenticated user
+- `POST /api/bio-pages` — create a new bio page
+- `PATCH /api/bio-pages/:id` — update bio page
+- `DELETE /api/bio-pages/:id` — delete bio page
+- `POST /api/bio-pages/:id/set-default` — set default bio page
 - `PATCH /api/profile/:id` — update profile fields
 - `POST /api/links` — create a social link
 - `PATCH /api/links/:id` — update a link

@@ -1,4 +1,4 @@
-import { type User, type UpsertUser, type Profile, type SocialLink, type Theme, type InsertProfile, type InsertSocialLink, type UpdateProfile, type UpdateSocialLink, type InsertTheme, type UpdateTheme, users, profiles, socialLinks, themes } from "@shared/schema";
+import { type User, type UpsertUser, type Profile, type SocialLink, type Theme, type InsertProfile, type InsertSocialLink, type UpdateProfile, type UpdateSocialLink, type InsertTheme, type UpdateTheme, type CreateBioPage, type UpdateBioPage, users, profiles, socialLinks, themes } from "@shared/schema";
 import { db } from "./db";
 import { eq, asc, sql, and } from "drizzle-orm";
 
@@ -18,8 +18,15 @@ export interface IStorage {
   getProfile(username: string): Promise<Profile | undefined>;
   getProfileById(id: string): Promise<Profile | undefined>;
   getProfileByUserId(userId: string): Promise<Profile | undefined>;
+  getProfileByPageName(pageName: string): Promise<Profile | undefined>;
+  getProfilesByUserId(userId: string): Promise<Profile[]>;
+  getDefaultProfileByUserId(userId: string): Promise<Profile | undefined>;
   createProfile(profile: InsertProfile): Promise<Profile>;
+  createBioPage(userId: string, pageData: CreateBioPage): Promise<Profile>;
   updateProfile(id: string, updates: Partial<UpdateProfile>): Promise<Profile | undefined>;
+  updateBioPage(id: string, updates: Partial<UpdateBioPage>): Promise<Profile | undefined>;
+  deleteBioPage(id: string, userId: string): Promise<boolean>;
+  setDefaultBioPage(id: string, userId: string): Promise<void>;
   incrementProfileViews(id: string): Promise<void>;
   incrementLinkClicks(id: string): Promise<void>;
 
@@ -128,7 +135,8 @@ export class DatabaseStorage implements IStorage {
 
   // Profile methods
   async getProfile(username: string): Promise<Profile | undefined> {
-    const [profile] = await db.select().from(profiles).where(eq(profiles.username, username));
+    // For backward compatibility, check both username and pageName
+    const [profile] = await db.select().from(profiles).where(eq(profiles.pageName, username));
     return profile || undefined;
   }
 
@@ -138,7 +146,26 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getProfileByUserId(userId: string): Promise<Profile | undefined> {
-    const [profile] = await db.select().from(profiles).where(eq(profiles.userId, userId));
+    // Return the default profile for backward compatibility
+    const [profile] = await db.select().from(profiles).where(and(eq(profiles.userId, userId), eq(profiles.isDefault, true)));
+    return profile || undefined;
+  }
+
+  async getProfileByPageName(pageName: string): Promise<Profile | undefined> {
+    const [profile] = await db.select().from(profiles).where(eq(profiles.pageName, pageName));
+    return profile || undefined;
+  }
+
+  async getProfilesByUserId(userId: string): Promise<Profile[]> {
+    return await db
+      .select()
+      .from(profiles)
+      .where(eq(profiles.userId, userId))
+      .orderBy(asc(profiles.createdAt));
+  }
+
+  async getDefaultProfileByUserId(userId: string): Promise<Profile | undefined> {
+    const [profile] = await db.select().from(profiles).where(and(eq(profiles.userId, userId), eq(profiles.isDefault, true)));
     return profile || undefined;
   }
 
@@ -150,13 +177,95 @@ export class DatabaseStorage implements IStorage {
     return profile;
   }
 
+  async createBioPage(userId: string, pageData: CreateBioPage): Promise<Profile> {
+    // Check if this is the first page for the user
+    const existingProfiles = await this.getProfilesByUserId(userId);
+    const isFirstPage = existingProfiles.length === 0;
+
+    const [profile] = await db
+      .insert(profiles)
+      .values({
+        userId,
+        pageName: pageData.pageName,
+        displayName: pageData.displayName,
+        bio: pageData.bio,
+        profileImageUrl: pageData.profileImageUrl || null,
+        isDefault: isFirstPage, // First page is always default
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+    return profile;
+  }
+
   async updateProfile(id: string, updates: Partial<UpdateProfile>): Promise<Profile | undefined> {
     const [profile] = await db
       .update(profiles)
-      .set(updates)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
       .where(eq(profiles.id, id))
       .returning();
     return profile || undefined;
+  }
+
+  async updateBioPage(id: string, updates: Partial<UpdateBioPage>): Promise<Profile | undefined> {
+    const [profile] = await db
+      .update(profiles)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(profiles.id, id))
+      .returning();
+    return profile || undefined;
+  }
+
+  async deleteBioPage(id: string, userId: string): Promise<boolean> {
+    // Check if this is the default page
+    const profile = await this.getProfileById(id);
+    if (!profile || profile.userId !== userId) {
+      return false;
+    }
+
+    if (profile.isDefault) {
+      // If deleting the default page, make another page the default
+      const otherProfiles = await db
+        .select()
+        .from(profiles)
+        .where(and(eq(profiles.userId, userId), eq(profiles.id, sql`${profiles.id} != ${id}`)))
+        .limit(1);
+
+      if (otherProfiles.length > 0) {
+        await db
+          .update(profiles)
+          .set({ isDefault: true, updatedAt: new Date() })
+          .where(eq(profiles.id, otherProfiles[0].id));
+      }
+    }
+
+    const result = await db
+      .delete(profiles)
+      .where(and(eq(profiles.id, id), eq(profiles.userId, userId)))
+      .returning();
+    return result.length > 0;
+  }
+
+  async setDefaultBioPage(id: string, userId: string): Promise<void> {
+    await db.transaction(async (tx) => {
+      // First, unset all default pages for this user
+      await tx
+        .update(profiles)
+        .set({ isDefault: false, updatedAt: new Date() })
+        .where(eq(profiles.userId, userId));
+
+      // Then set the specified page as default
+      await tx
+        .update(profiles)
+        .set({ isDefault: true, updatedAt: new Date() })
+        .where(and(eq(profiles.id, id), eq(profiles.userId, userId)));
+    });
   }
 
   async incrementProfileViews(id: string): Promise<void> {

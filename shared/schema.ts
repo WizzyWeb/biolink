@@ -34,13 +34,21 @@ export const users = pgTable("users", {
 export const profiles = pgTable("profiles", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").notNull().references(() => users.id),
-  username: text("username").notNull().unique(),
+  pageName: text("page_name").notNull(), // Unique name for the page (e.g., "personal", "business")
   displayName: text("display_name").notNull(),
   bio: text("bio").notNull(),
   profileImageUrl: text("profile_image_url"),
   profileViews: integer("profile_views").default(0),
   linkClicks: integer("link_clicks").default(0),
-});
+  isDefault: boolean("is_default").default(false), // One page per user should be default
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => [
+  // Unique constraint on userId + pageName combination
+  index("IDX_user_page_name").on(table.userId, table.pageName),
+  // Unique constraint on pageName globally (for public URLs)
+  index("IDX_page_name_unique").on(table.pageName),
+]);
 
 export const socialLinks = pgTable("social_links", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -71,6 +79,8 @@ export const insertProfileSchema = createInsertSchema(profiles).omit({
   id: true,
   profileViews: true,
   linkClicks: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
 export const insertSocialLinkSchema = createInsertSchema(socialLinks).omit({
@@ -78,6 +88,20 @@ export const insertSocialLinkSchema = createInsertSchema(socialLinks).omit({
 });
 
 export const updateProfileSchema = insertProfileSchema.partial().extend({
+  id: z.string(),
+});
+
+// Schema for creating a new bio page
+export const createBioPageSchema = z.object({
+  pageName: z.string().min(1, "Page name is required").max(50, "Page name must be less than 50 characters")
+    .regex(/^[a-zA-Z0-9-_]+$/, "Page name can only contain letters, numbers, hyphens, and underscores"),
+  displayName: z.string().min(1, "Display name is required").max(100, "Display name must be less than 100 characters"),
+  bio: z.string().min(1, "Bio is required").max(500, "Bio must be less than 500 characters"),
+  profileImageUrl: z.string().url().optional().or(z.literal("")),
+});
+
+// Schema for updating bio page
+export const updateBioPageSchema = createBioPageSchema.partial().extend({
   id: z.string(),
 });
 
@@ -173,3 +197,5 @@ export type ThemeColors = z.infer<typeof themeColorsSchema>;
 export type ThemeGradients = z.infer<typeof themeGradientsSchema>;
 export type ThemeFonts = z.infer<typeof themeFontsSchema>;
 export type ThemeLayout = z.infer<typeof themeLayoutSchema>;
+export type CreateBioPage = z.infer<typeof createBioPageSchema>;
+export type UpdateBioPage = z.infer<typeof updateBioPageSchema>;
