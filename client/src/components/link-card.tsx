@@ -11,22 +11,12 @@ interface LinkCardProps {
   onClick: (e: React.MouseEvent) => void;
 }
 
-/**
- * Render a stylized card for a social link with optional edit and delete actions.
- *
- * @param link - The SocialLink to display (must include `id`, `title`, `platform`, and optional `description`)
- * @param isEditMode - When true, displays edit/delete action buttons in the card UI
- * @param onDelete - Callback invoked when the delete button is clicked
- * @param onEdit - Optional callback invoked when the edit button is clicked
- * @param onClick - Callback invoked when the card's main clickable area is clicked
- * @returns The JSX element representing the link card
- */
 export default function LinkCard({ link, isEditMode, onDelete, onEdit, onClick }: LinkCardProps) {
   const { icon, bgColor } = getPlatformIcon(link.platform);
 
   return (
     <div 
-      className="link-card theme-card theme-spacing-normal cursor-pointer relative group"
+      className="link-card bg-white rounded-card shadow-md p-5 cursor-pointer relative group"
       data-testid={`card-link-${link.id}`}
     >
       {/* Edit Actions (Edit Mode) */}
@@ -60,11 +50,11 @@ export default function LinkCard({ link, isEditMode, onDelete, onEdit, onClick }
           {icon}
         </div>
         <div className="flex-1">
-          <h3 className="text-lg theme-font-body font-semibold text-charcoal" data-testid={`text-title-${link.id}`}>
+          <h3 className="text-lg font-sans font-semibold text-charcoal" data-testid={`text-title-${link.id}`}>
             {link.title}
           </h3>
           {link.description && (
-            <p className="text-sm text-gray-500 theme-font-body" data-testid={`text-description-${link.id}`}>
+            <p className="text-sm text-gray-500" data-testid={`text-description-${link.id}`}>
               {link.description}
             </p>
           )}
