@@ -44,6 +44,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Inter",
       body: "Inter",
       display: "Poppins",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 16,
@@ -95,6 +98,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Inter",
       body: "Inter",
       display: "Poppins",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 12,
@@ -146,6 +152,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Inter",
       body: "Inter",
       display: "Poppins",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 20,
@@ -197,6 +206,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Inter",
       body: "Inter",
       display: "Poppins",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 16,
@@ -248,6 +260,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Inter",
       body: "Inter",
       display: "Poppins",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 12,
@@ -299,6 +314,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Inter",
       body: "Inter",
       display: "Inter",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 8,
@@ -350,6 +368,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Inter",
       body: "Inter",
       display: "Poppins",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 24,
@@ -401,6 +422,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Inter",
       body: "Inter",
       display: "Poppins",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 16,
@@ -452,6 +476,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Poppins",
       body: "Inter",
       display: "Playfair Display",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 18,
@@ -503,6 +530,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Space Grotesk",
       body: "Inter",
       display: "Poppins",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 16,
@@ -554,6 +584,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Manrope",
       body: "Inter",
       display: "Space Grotesk",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 10,
@@ -605,6 +638,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Montserrat",
       body: "Inter",
       display: "Playfair Display",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 22,
@@ -656,6 +692,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "DM Sans",
       body: "Inter",
       display: "Cormorant Garamond",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 20,
@@ -707,6 +746,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Outfit",
       body: "Inter",
       display: "Poppins",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 16,
@@ -758,6 +800,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Source Sans Pro",
       body: "Inter",
       display: "Space Grotesk",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 14,
@@ -809,6 +854,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Raleway",
       body: "Inter",
       display: "Playfair Display",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 24,
@@ -860,6 +908,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Nunito",
       body: "Inter",
       display: "Poppins",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 20,
@@ -911,6 +962,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Lora",
       body: "Inter",
       display: "Playfair Display",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 18,
@@ -962,6 +1016,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Work Sans",
       body: "Inter",
       display: "Poppins",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 16,
@@ -1013,6 +1070,9 @@ export const presetThemes: Omit<InsertTheme, "profileId">[] = [
       heading: "Cabin",
       body: "Inter",
       display: "Playfair Display",
+      headingColor: "hsl(210 25% 7.8431%)",
+      bodyColor: "hsl(210 25% 7.8431%)",
+      displayColor: "hsl(210 25% 7.8431%)",
     },
     layout: {
       borderRadius: 26,

@@ -429,28 +429,51 @@ export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeB
               </TabsContent>
 
               <TabsContent value="fonts" className="space-y-4">
-                {Object.entries(theme.fonts as ThemeFonts).map(([fontKey, fontValue]) => (
-                  <div key={fontKey} className="space-y-2">
-                    <Label className="capitalize">
-                      {fontKey} Font
-                    </Label>
-                    <Select
-                      value={fontValue as string}
-                      onValueChange={(value) => handleFontChange(fontKey as keyof ThemeFonts, value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {fontOptions.map((font) => (
-                          <SelectItem key={font.value} value={font.value}>
-                            <span style={{ fontFamily: font.value }}>{font.label}</span>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                ))}
+                {Object.entries(theme.fonts as ThemeFonts).map(([fontKey, fontValue]) => {
+                  const isColorField = fontKey.endsWith('Color');
+                  const displayName = isColorField 
+                    ? fontKey.replace('Color', '') + ' Color'
+                    : fontKey + ' Font';
+                  
+                  return (
+                    <div key={fontKey} className="space-y-2">
+                      <Label className="capitalize">
+                        {displayName}
+                      </Label>
+                      {isColorField ? (
+                        <div className="flex gap-2">
+                          <Input
+                            type="color"
+                            value={convertToHex(fontValue as string)}
+                            onChange={(e) => handleFontChange(fontKey as keyof ThemeFonts, convertToHsl(e.target.value))}
+                            className="w-12 h-10 p-1"
+                          />
+                          <Input
+                            value={fontValue as string}
+                            onChange={(e) => handleFontChange(fontKey as keyof ThemeFonts, e.target.value)}
+                            className="flex-1"
+                          />
+                        </div>
+                      ) : (
+                        <Select
+                          value={fontValue as string}
+                          onValueChange={(value) => handleFontChange(fontKey as keyof ThemeFonts, value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {fontOptions.map((font) => (
+                              <SelectItem key={font.value} value={font.value}>
+                                <span style={{ fontFamily: font.value }}>{font.label}</span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    </div>
+                  );
+                })}
               </TabsContent>
 
               <TabsContent value="layout" className="space-y-4">

@@ -74,6 +74,9 @@ export function ThemeProvider({ children, profileId }: ThemeProviderProps) {
       heading: 'Inter',
       body: 'Inter',
       display: 'Poppins',
+      headingColor: 'hsl(210 25% 7.8431%)',
+      bodyColor: 'hsl(210 25% 7.8431%)',
+      displayColor: 'hsl(210 25% 7.8431%)',
     },
     layout: {
       borderRadius: 16,
@@ -172,6 +175,11 @@ export function ThemeProvider({ children, profileId }: ThemeProviderProps) {
     root.style.setProperty('--font-heading', themeToApply.fonts.heading);
     root.style.setProperty('--font-body', themeToApply.fonts.body);
     root.style.setProperty('--font-display', themeToApply.fonts.display);
+    
+    // Apply font colors
+    root.style.setProperty('--font-heading-color', themeToApply.fonts.headingColor);
+    root.style.setProperty('--font-body-color', themeToApply.fonts.bodyColor);
+    root.style.setProperty('--font-display-color', themeToApply.fonts.displayColor);
 
     // Apply layout
     root.style.setProperty('--radius', `${themeToApply.layout.borderRadius}px`);

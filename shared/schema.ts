@@ -133,6 +133,9 @@ export const themeFontsSchema = z.object({
   heading: z.string(),
   body: z.string(),
   display: z.string(),
+  headingColor: z.string(),
+  bodyColor: z.string(),
+  displayColor: z.string(),
 });
 
 export const themeLayoutSchema = z.object({

@@ -48,6 +48,9 @@
   /* Dynamic theme variables */
   --font-heading: var(--font-sans);
   --font-body: var(--font-sans);
+  --font-heading-color: hsl(210 25% 7.8431%);
+  --font-body-color: hsl(210 25% 7.8431%);
+  --font-display-color: hsl(210 25% 7.8431%);
   --bg-gradient-start: hsl(48 100% 81%);
   --bg-gradient-end: #FFD89B;
   --bg-gradient-angle: 135deg;
@@ -213,13 +216,16 @@
 
   .theme-font-heading {
     font-family: var(--font-heading);
+    color: var(--font-heading-color);
   }
 
   .theme-font-body {
     font-family: var(--font-body);
+    color: var(--font-body-color);
   }
 
   .theme-font-display {
     font-family: var(--font-display);
+    color: var(--font-display-color);
   }
 }
