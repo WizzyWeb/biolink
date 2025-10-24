@@ -4,7 +4,6 @@ import { presetThemes } from './presetThemes';
 
 async function seedThemes() {
   try {
-    console.log('Seeding preset themes...');
     
     // Use a transaction to ensure all operations succeed or fail together
     await db.transaction(async (tx) => {
@@ -43,7 +42,6 @@ async function seedThemes() {
       }
     });
     
-    console.log('Preset themes seeded successfully!');
   } catch (error) {
     console.error('Error seeding themes:', error);
   }

@@ -18,10 +18,6 @@ import {
 import { presetThemes } from "./presetThemes";
 import { z } from "zod";
 
-// Debug: Check if presetThemes is loaded correctly
-console.log('Preset themes loaded:', presetThemes?.length || 0);
-console.log('Preset themes is array:', Array.isArray(presetThemes));
-console.log('Preset themes first item:', presetThemes?.[0]);
 
 // Session configuration
 const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
@@ -297,9 +293,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get preset themes
   app.get("/api/themes/presets", async (req, res) => {
     try {
-      console.log('Fetching preset themes, count:', presetThemes?.length || 0);
-      console.log('Preset themes type:', Array.isArray(presetThemes) ? 'array' : typeof presetThemes);
-      console.log('First preset name:', presetThemes?.[0]?.name);
       
       if (!Array.isArray(presetThemes)) {
         console.error('presetThemes is not an array:', presetThemes);
@@ -316,8 +309,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         layout: preset.layout,
         isPreset: true,
       }));
-      console.log('Formatted presets count:', formattedPresets.length);
-      console.log('First formatted preset:', formattedPresets[0]?.name);
       res.json(formattedPresets);
     } catch (error) {
       console.error('Error fetching preset themes:', error);
