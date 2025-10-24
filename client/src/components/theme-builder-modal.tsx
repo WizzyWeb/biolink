@@ -42,6 +42,130 @@ const fontOptions = [
   { value: 'Merriweather', label: 'Merriweather' },
 ];
 
+// Helper function to convert any color format to hex for color inputs
+const convertToHex = (color: string): string => {
+  if (!color || typeof color !== 'string') return '#000000';
+  
+  // If already hex, return as is
+  if (color.startsWith('#')) return color;
+  
+  // Handle HSL format
+  if (color.startsWith('hsl(')) {
+    try {
+      // Extract HSL values from string like "hsl(258 89% 66%)"
+      const match = color.match(/hsl\((\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)%\s+(\d+(?:\.\d+)?)%\)/);
+      if (match) {
+        const h = parseFloat(match[1]);
+        const s = parseFloat(match[2]) / 100;
+        const l = parseFloat(match[3]) / 100;
+        
+        // Convert HSL to RGB
+        const c = (1 - Math.abs(2 * l - 1)) * s;
+        const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+        const m = l - c / 2;
+        
+        let r, g, b;
+        if (h >= 0 && h < 60) {
+          r = c; g = x; b = 0;
+        } else if (h >= 60 && h < 120) {
+          r = x; g = c; b = 0;
+        } else if (h >= 120 && h < 180) {
+          r = 0; g = c; b = x;
+        } else if (h >= 180 && h < 240) {
+          r = 0; g = x; b = c;
+        } else if (h >= 240 && h < 300) {
+          r = x; g = 0; b = c;
+        } else {
+          r = c; g = 0; b = x;
+        }
+        
+        // Convert to 0-255 range and then to hex
+        const toHex = (n: number) => {
+          const hex = Math.round((n + m) * 255).toString(16);
+          return hex.length === 1 ? '0' + hex : hex;
+        };
+        
+        return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+      }
+    } catch (error) {
+      console.warn('Failed to convert HSL to hex:', error);
+    }
+  }
+  
+  // Handle RGB format
+  if (color.startsWith('rgb(')) {
+    try {
+      const match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+      if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const toHex = (n: number) => {
+          const hex = n.toString(16);
+          return hex.length === 1 ? '0' + hex : hex;
+        };
+        return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+      }
+    } catch (error) {
+      console.warn('Failed to convert RGB to hex:', error);
+    }
+  }
+  
+  // Fallback to black
+  return '#000000';
+};
+
+// Helper function to convert hex back to HSL format (theme's expected format)
+const convertToHsl = (hex: string): string => {
+  if (!hex || typeof hex !== 'string') return 'hsl(0 0% 0%)';
+  
+  // Ensure hex starts with #
+  if (!hex.startsWith('#')) {
+    hex = '#' + hex;
+  }
+  
+  // Remove # and ensure 6 characters
+  hex = hex.replace('#', '');
+  if (hex.length === 3) {
+    hex = hex.split('').map(char => char + char).join('');
+  }
+  
+  if (hex.length !== 6) return 'hsl(0 0% 0%)';
+  
+  try {
+    // Convert hex to RGB
+    const r = parseInt(hex.substr(0, 2), 16) / 255;
+    const g = parseInt(hex.substr(2, 2), 16) / 255;
+    const b = parseInt(hex.substr(4, 2), 16) / 255;
+    
+    // Convert RGB to HSL
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const diff = max - min;
+    
+    let h = 0;
+    if (diff !== 0) {
+      if (max === r) {
+        h = ((g - b) / diff) % 6;
+      } else if (max === g) {
+        h = (b - r) / diff + 2;
+      } else {
+        h = (r - g) / diff + 4;
+      }
+    }
+    h = Math.round(h * 60);
+    if (h < 0) h += 360;
+    
+    const l = (max + min) / 2;
+    const s = diff === 0 ? 0 : diff / (1 - Math.abs(2 * l - 1));
+    
+    return `hsl(${h} ${Math.round(s * 100)}% ${Math.round(l * 100)}%)`;
+  } catch (error) {
+    console.warn('Failed to convert hex to HSL:', error);
+    return 'hsl(0 0% 0%)';
+  }
+};
+
 // Import all preset themes from server
 import { presetThemes as serverPresetThemes } from '../../../server/presetThemes';
 
@@ -152,7 +276,7 @@ export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeB
   const handleGradientChange = (gradientType: keyof ThemeGradients, property: string, value: any) => {
     updateThemeGradients({
       [gradientType]: {
-        ...theme?.gradients[gradientType],
+        ...(theme?.gradients as ThemeGradients)?.[gradientType],
         [property]: value,
       },
     });
@@ -207,7 +331,7 @@ export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeB
 
               <TabsContent value="colors" className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                  {Object.entries(theme.colors).map(([key, value]) => (
+                  {Object.entries(theme.colors as ThemeColors).map(([key, value]) => (
                     <div key={key} className="space-y-2">
                       <Label htmlFor={key} className="capitalize">
                         {key.replace(/([A-Z])/g, ' $1').trim()}
@@ -216,12 +340,12 @@ export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeB
                         <Input
                           id={key}
                           type="color"
-                          value={value}
-                          onChange={(e) => handleColorChange(key as keyof ThemeColors, e.target.value)}
+                          value={convertToHex(value as string)}
+                          onChange={(e) => handleColorChange(key as keyof ThemeColors, convertToHsl(e.target.value))}
                           className="w-12 h-10 p-1"
                         />
                         <Input
-                          value={value}
+                          value={value as string}
                           onChange={(e) => handleColorChange(key as keyof ThemeColors, e.target.value)}
                           className="flex-1"
                         />
@@ -232,7 +356,7 @@ export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeB
               </TabsContent>
 
               <TabsContent value="gradients" className="space-y-4">
-                {Object.entries(theme.gradients).map(([gradientType, gradient]) => (
+                {Object.entries(theme.gradients as ThemeGradients).map(([gradientType, gradient]) => (
                   <Card key={gradientType}>
                     <CardHeader>
                       <CardTitle className="capitalize text-sm">
@@ -250,25 +374,25 @@ export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeB
                     <CardContent className="space-y-4">
                       <div className="flex items-center space-x-2">
                         <Switch
-                          checked={gradient.enabled}
+                          checked={(gradient as any).enabled}
                           onCheckedChange={(checked) => handleGradientChange(gradientType as keyof ThemeGradients, 'enabled', checked)}
                         />
                         <Label>Enable gradient</Label>
                       </div>
                       
-                      {gradient.enabled && (
+                      {(gradient as any).enabled && (
                         <>
                           <div className="space-y-2">
                             <Label>Start Color</Label>
                             <div className="flex gap-2">
                               <Input
                                 type="color"
-                                value={gradient.start}
-                                onChange={(e) => handleGradientChange(gradientType as keyof ThemeGradients, 'start', e.target.value)}
+                                value={convertToHex((gradient as any).start)}
+                                onChange={(e) => handleGradientChange(gradientType as keyof ThemeGradients, 'start', convertToHsl(e.target.value))}
                                 className="w-12 h-10 p-1"
                               />
                               <Input
-                                value={gradient.start}
+                                value={(gradient as any).start}
                                 onChange={(e) => handleGradientChange(gradientType as keyof ThemeGradients, 'start', e.target.value)}
                                 className="flex-1"
                               />
@@ -280,12 +404,12 @@ export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeB
                             <div className="flex gap-2">
                               <Input
                                 type="color"
-                                value={gradient.end}
-                                onChange={(e) => handleGradientChange(gradientType as keyof ThemeGradients, 'end', e.target.value)}
+                                value={convertToHex((gradient as any).end)}
+                                onChange={(e) => handleGradientChange(gradientType as keyof ThemeGradients, 'end', convertToHsl(e.target.value))}
                                 className="w-12 h-10 p-1"
                               />
                               <Input
-                                value={gradient.end}
+                                value={(gradient as any).end}
                                 onChange={(e) => handleGradientChange(gradientType as keyof ThemeGradients, 'end', e.target.value)}
                                 className="flex-1"
                               />
@@ -293,9 +417,9 @@ export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeB
                           </div>
                           
                           <div className="space-y-2">
-                            <Label>Angle: {gradient.angle}°</Label>
+                            <Label>Angle: {(gradient as any).angle}°</Label>
                             <Slider
-                              value={[gradient.angle]}
+                              value={[(gradient as any).angle]}
                               onValueChange={([value]) => handleGradientChange(gradientType as keyof ThemeGradients, 'angle', value)}
                               max={360}
                               step={1}
@@ -310,13 +434,13 @@ export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeB
               </TabsContent>
 
               <TabsContent value="fonts" className="space-y-4">
-                {Object.entries(theme.fonts).map(([fontKey, fontValue]) => (
+                {Object.entries(theme.fonts as ThemeFonts).map(([fontKey, fontValue]) => (
                   <div key={fontKey} className="space-y-2">
                     <Label className="capitalize">
                       {fontKey} Font
                     </Label>
                     <Select
-                      value={fontValue}
+                      value={fontValue as string}
                       onValueChange={(value) => handleFontChange(fontKey as keyof ThemeFonts, value)}
                     >
                       <SelectTrigger>
@@ -336,9 +460,9 @@ export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeB
 
               <TabsContent value="layout" className="space-y-4">
                 <div className="space-y-2">
-                  <Label>Border Radius: {theme.layout.borderRadius}px</Label>
+                  <Label>Border Radius: {(theme.layout as ThemeLayout).borderRadius}px</Label>
                   <Slider
-                    value={[theme.layout.borderRadius]}
+                    value={[(theme.layout as ThemeLayout).borderRadius]}
                     onValueChange={([value]) => handleLayoutChange('borderRadius', value)}
                     max={32}
                     step={1}
@@ -349,7 +473,7 @@ export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeB
                 <div className="space-y-2">
                   <Label>Card Style</Label>
                   <Select
-                    value={theme.layout.cardStyle}
+                    value={(theme.layout as ThemeLayout).cardStyle}
                     onValueChange={(value) => handleLayoutChange('cardStyle', value)}
                   >
                     <SelectTrigger>
@@ -366,7 +490,7 @@ export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeB
                 <div className="space-y-2">
                   <Label>Spacing</Label>
                   <Select
-                    value={theme.layout.spacing}
+                    value={(theme.layout as ThemeLayout).spacing}
                     onValueChange={(value) => handleLayoutChange('spacing', value)}
                   >
                     <SelectTrigger>
@@ -381,9 +505,9 @@ export default function ThemeBuilderModal({ isOpen, onClose, profileId }: ThemeB
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Shadow Intensity: {Math.round(theme.layout.shadowIntensity * 100)}%</Label>
+                  <Label>Shadow Intensity: {Math.round((theme.layout as ThemeLayout).shadowIntensity * 100)}%</Label>
                   <Slider
-                    value={[theme.layout.shadowIntensity]}
+                    value={[(theme.layout as ThemeLayout).shadowIntensity]}
                     onValueChange={([value]) => handleLayoutChange('shadowIntensity', value)}
                     max={1}
                     step={0.05}
