@@ -20,6 +20,15 @@ interface ProfileData {
   links: SocialLink[];
 }
 
+/**
+ * Dashboard page that displays and manages the authenticated user's profile, links, and analytics.
+ *
+ * Shows a loading state while authentication or profile data is loading, presents profile settings,
+ * quick stats, link management with add/edit modals, and a link to detailed analytics. If the user
+ * is not authenticated, displays an unauthorized toast and redirects to /api/login.
+ *
+ * @returns The JSX element for the dashboard UI; renders `null` when the user is unauthenticated or missing a profile.
+ */
 export default function Dashboard() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();

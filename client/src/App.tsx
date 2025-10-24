@@ -15,6 +15,11 @@ import Home from "@/pages/home";
 import Analytics from "@/pages/analytics";
 import NotFound from "@/pages/not-found";
 
+/**
+ * Declares the application's route map and returns the router UI.
+ *
+ * @returns A React element that renders the first route whose path matches the current URL (including dynamic routes for `:profileId` and `:username`); renders the `NotFound` component when no routes match.
+ */
 function Router() {
   return (
     <Switch>

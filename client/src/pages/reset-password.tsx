@@ -8,6 +8,16 @@ import { useToast } from "@/hooks/use-toast";
 import { Link as LinkIcon, Lock, CheckCircle2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
+/**
+ * Renders the Reset Password page and manages the complete password reset flow.
+ *
+ * Extracts a reset token from the URL query string, validates the new password
+ * and confirmation (including minimum length and matching), submits the token
+ * and new password to the backend, shows user-facing toasts for errors, and
+ * displays a success confirmation when the reset completes.
+ *
+ * @returns A React element representing the reset password page UI.
+ */
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

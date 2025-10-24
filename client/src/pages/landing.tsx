@@ -2,6 +2,16 @@ import { Button } from "@/components/ui/button";
 import { Link2, Github, Heart } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
+/**
+ * Render the application's public landing page with header, hero, features, and footer.
+ *
+ * Uses authentication state from `useAuth` to show a loading indicator while auth is loading
+ * and to conditionally render navigation actions: authenticated users can access the dashboard,
+ * while unauthenticated users are offered Log In and Sign Up flows. The primary "Get Started"
+ * control navigates to the dashboard when authenticated or to the registration page otherwise.
+ *
+ * @returns The landing page JSX element
+ */
 export default function Landing() {
   const { isAuthenticated, isLoading } = useAuth();
 

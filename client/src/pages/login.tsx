@@ -8,6 +8,13 @@ import { useToast } from "@/hooks/use-toast";
 import { Link as LinkIcon, Mail, Lock, AlertCircle } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
+/**
+ * Render the login page and manage user authentication and email verification flows.
+ *
+ * Handles form submission (email/password), displays success or error toasts, redirects to the dashboard on successful login, and provides a resend-verification action when email verification is required. Also renders alternate third-party authentication and navigation links (forgot password, sign up, back to home).
+ *
+ * @returns The component's JSX element representing the login page.
+ */
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

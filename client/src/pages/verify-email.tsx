@@ -4,6 +4,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link as LinkIcon, CheckCircle2, XCircle, Loader2 } from "lucide-react";
 
+/**
+ * Renders an email verification page that reads a "token" query parameter, verifies it with the authentication API, and displays loading, success, or error states.
+ *
+ * @returns The verification page JSX. On success it shows a success message and redirects to /dashboard after 2 seconds; on error it shows an error message and actions to go to login or home.
+ */
 export default function VerifyEmail() {
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [message, setMessage] = useState("");

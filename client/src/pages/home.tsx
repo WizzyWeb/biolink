@@ -13,6 +13,15 @@ interface ProfileData {
   links: SocialLink[];
 }
 
+/**
+ * Render a public, non-editable profile page for the username supplied by the route.
+ *
+ * Fetches profile data for the route `username` and displays loading, not-found, and success states.
+ * When data is available, renders the profile section, social links, a share URL input with a copy action,
+ * and social share buttons. If the route has no `username`, the browser is redirected to the home page.
+ *
+ * @returns The rendered JSX element for the profile page, or `null` when redirecting to the home page.
+ */
 export default function Home() {
   const { username } = useParams<{ username?: string }>();
 
