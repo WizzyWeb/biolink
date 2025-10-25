@@ -23,10 +23,11 @@ export function generateGravatarHash(email: string): string {
 }
 
 /**
- * Generates a Gravatar URL for a given email address
- * @param email - The email address
- * @param options - Optional parameters for the Gravatar request
- * @returns The complete Gravatar URL
+ * Build a Gravatar image URL for the given email with optional query parameters.
+ *
+ * @param email - Email address used to compute the Gravatar hash (trimmed and lowercased)
+ * @param options - Optional query settings: `size` (s), `default` (d), `rating` (r), `forceDefault` (f)
+ * @returns The full Gravatar URL for the hashed email, including query parameters when provided
  */
 export function getGravatarUrl(email: string, options: GravatarOptions = {}): string {
   const hash = generateGravatarHash(email);
@@ -74,11 +75,12 @@ export function getGravatarWithFallback(
 }
 
 /**
- * Gets a Gravatar URL with initials fallback
- * @param email - The email address
- * @param name - The user's name for initials
- * @param size - The size of the image (default: 200)
- * @returns The Gravatar URL with initials fallback
+ * Builds a Gravatar URL configured to fall back to an initials-based image.
+ *
+ * @param email - The email address for which to generate the Gravatar hash
+ * @param name - The user's full name used to derive initials for the fallback image
+ * @param size - The requested image size in pixels (defaults to 200)
+ * @returns The Gravatar image URL that will use initials as the fallback
  */
 export function getGravatarWithInitials(
   email: string, 
@@ -93,9 +95,10 @@ export function getGravatarWithInitials(
 }
 
 /**
- * Checks if a Gravatar exists for an email address
+ * Determine whether an account has a Gravatar image for the given email.
+ *
  * @param email - The email address to check
- * @returns Promise<boolean> - True if Gravatar exists, false otherwise
+ * @returns `true` if a Gravatar exists for the email, `false` otherwise.
  */
 export async function checkGravatarExists(email: string): Promise<boolean> {
   try {

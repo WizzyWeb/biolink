@@ -23,10 +23,11 @@ export function generateGravatarHash(email: string): string {
 }
 
 /**
- * Generates a Gravatar URL for a given email address
- * @param email - The email address
- * @param options - Optional parameters for the Gravatar request
- * @returns The complete Gravatar URL
+ * Builds a Gravatar image URL for the given email, applying optional query parameters.
+ *
+ * @param email - Email address to normalize and hash for the Gravatar path
+ * @param options - Optional Gravatar parameters: `size` (`s`), `default` (`d`), `rating` (`r`), and `forceDefault` (`f`)
+ * @returns The Gravatar image URL for the email, including query parameters when provided
  */
 export function getGravatarUrl(email: string, options: GravatarOptions = {}): string {
   const hash = generateGravatarHash(email);
@@ -55,11 +56,12 @@ export function getGravatarUrl(email: string, options: GravatarOptions = {}): st
 }
 
 /**
- * Gets a Gravatar URL with a fallback to a default image
- * @param email - The email address
- * @param fallbackUrl - The fallback image URL if Gravatar doesn't have an image
- * @param size - The size of the image (default: 200)
- * @returns The Gravatar URL with fallback
+ * Build a Gravatar URL that uses the provided image URL as the fallback.
+ *
+ * @param email - The email address associated with the Gravatar
+ * @param fallbackUrl - Image URL to use when the user has no Gravatar
+ * @param size - Desired image size in pixels
+ * @returns The Gravatar URL configured to fall back to `fallbackUrl`
  */
 export function getGravatarWithFallback(
   email: string, 
@@ -93,9 +95,10 @@ export function getGravatarWithInitials(
 }
 
 /**
- * Checks if a Gravatar exists for an email address
- * @param email - The email address to check
- * @returns Promise<boolean> - True if Gravatar exists, false otherwise
+ * Determine whether a Gravatar exists for an email address.
+ *
+ * @param email - The email address to check for an associated Gravatar
+ * @returns `true` if a Gravatar exists for `email`, `false` otherwise
  */
 export async function checkGravatarExists(email: string): Promise<boolean> {
   try {

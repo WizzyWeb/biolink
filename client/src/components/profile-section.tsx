@@ -10,6 +10,15 @@ interface ProfileSectionProps {
   userEmail?: string; // Optional user email for Gravatar integration
 }
 
+/**
+ * Render the user's profile card with image, display name, bio, view/click stats, and an optional edit control.
+ *
+ * When `userEmail` is provided and the profile has no custom image, a Gravatar URL will be used as the image source (falling back to a default image). The edit button is shown only when `isEditMode` is true and invokes `onEditProfile` when clicked.
+ *
+ * @param userEmail - Optional email used to fetch a Gravatar image when `profile.profileImageUrl` is not set
+ * @param onEditProfile - Handler invoked when the "Edit Profile Details" button is clicked
+ * @returns The ProfileSection React element
+ */
 export default function ProfileSection({ profile, isEditMode, onEditProfile, userEmail }: ProfileSectionProps) {
   const fallbackImage =
     "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&h=300";

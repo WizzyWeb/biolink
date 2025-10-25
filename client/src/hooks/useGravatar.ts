@@ -16,10 +16,23 @@ export interface UseGravatarReturn {
 }
 
 /**
- * Hook for using Gravatar profile images with fallback options
- * @param email - The user's email address
- * @param options - Configuration options
- * @returns Object with gravatarUrl, loading state, and error handling
+ * Manage and expose a Gravatar image URL along with loading, existence, and error state.
+ *
+ * Computes a Gravatar URL using the provided email and options, prefers an initials-based
+ * avatar when requested, and performs an existence check to set `hasGravatar`. If `email`
+ * is falsy the hook uses the configured fallback URL and sets `hasGravatar` to false.
+ *
+ * @param email - The user's email address; if falsy the hook immediately returns the `fallbackUrl`
+ * @param options - Configuration for URL generation:
+ *                  - `size`: desired image size (default 200)
+ *                  - `fallbackUrl`: URL to use when no Gravatar is available
+ *                  - `useInitials`: when true and `name` is provided, generate an initials avatar
+ *                  - `name`: display name used to generate initials when `useInitials` is true
+ * @returns An object with:
+ *          - `gravatarUrl`: the resolved image URL (Gravatar, initials-based, or fallback)
+ *          - `isLoading`: `true` while the existence check is in progress, `false` otherwise
+ *          - `hasGravatar`: `true` if a Gravatar was detected for the email, `false` otherwise
+ *          - `error`: an error message when an error occurred, or `null` when there is no error
  */
 export function useGravatar(
   email: string | null | undefined,
