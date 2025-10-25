@@ -98,11 +98,11 @@ export function useGravatar(
 }
 
 /**
- * Resolve a Gravatar image URL for the given email, preferring an initials-based image when requested and otherwise falling back to the provided URL.
- *
- * @param email - The user's email; when falsy the `fallbackUrl` is returned
- * @param options - Configuration: `size`, `fallbackUrl`, `useInitials`, and `name`
- * @returns The computed Gravatar URL (initials-based image, Gravatar with fallback, or the `fallbackUrl`)
+ * Hook for getting Gravatar URL without async checking
+ * Useful when you just need the URL and don't care about existence
+ * @param email - The user's email address
+ * @param options - Configuration options
+ * @returns The Gravatar URL
  */
 export function useGravatarUrl(
   email: string | null | undefined,

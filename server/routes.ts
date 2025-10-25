@@ -44,14 +44,32 @@ const sessionMiddleware = session({
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NODE_ENV === "production" && process.env.FORCE_HTTPS !== "false",
     sameSite: 'lax',
     maxAge: sessionTtl,
+    // Add domain configuration for production
+    ...(process.env.NODE_ENV === "production" && process.env.COOKIE_DOMAIN && {
+      domain: process.env.COOKIE_DOMAIN
+    }),
   },
 });
 
 // Authentication middleware for email/password sessions
 const isAuthenticated = async (req: any, res: any, next: any) => {
+  // Debug logging for production issues
+  if (process.env.NODE_ENV === "production") {
+    console.log("Auth debug:", {
+      hasSession: !!req.session,
+      sessionId: req.session?.id,
+      userId: req.session?.userId,
+      cookies: req.headers.cookie,
+      userAgent: req.headers['user-agent'],
+      host: req.headers.host,
+      origin: req.headers.origin,
+      referer: req.headers.referer
+    });
+  }
+  
   if (!req.session?.userId) {
     return res.status(401).json({ error: "Not authenticated" });
   }

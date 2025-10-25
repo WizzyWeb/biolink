@@ -1,6 +1,7 @@
 import { type User, type UpsertUser, type Profile, type SocialLink, type Theme, type InsertProfile, type InsertSocialLink, type UpdateProfile, type UpdateSocialLink, type InsertTheme, type UpdateTheme, type CreateBioPage, type UpdateBioPage, users, profiles, socialLinks, themes } from "@shared/schema";
 import { db } from "./db";
 import { eq, asc, sql, and, ne } from "drizzle-orm";
+import { getBestProfileImageUrl } from "./gravatar";
 
 export interface IStorage {
   // User methods
@@ -182,6 +183,25 @@ export class DatabaseStorage implements IStorage {
     const existingProfiles = await this.getProfilesByUserId(userId);
     const isFirstPage = existingProfiles.length === 0;
 
+    // Get user email for Gravatar integration
+    const user = await this.getUser(userId);
+    const userEmail = user?.email;
+
+    // Determine the best profile image URL
+    let profileImageUrl = pageData.profileImageUrl;
+    if (!profileImageUrl && userEmail) {
+      try {
+        profileImageUrl = await getBestProfileImageUrl(
+          userEmail,
+          pageData.profileImageUrl,
+          pageData.displayName
+        );
+      } catch (error) {
+        console.warn('Error getting Gravatar URL:', error);
+        // Continue with null profileImageUrl if Gravatar fails
+      }
+    }
+
     const [profile] = await db
       .insert(profiles)
       .values({
@@ -189,7 +209,7 @@ export class DatabaseStorage implements IStorage {
         pageName: pageData.pageName,
         displayName: pageData.displayName,
         bio: pageData.bio,
-        profileImageUrl: pageData.profileImageUrl || null,
+        profileImageUrl: profileImageUrl || null,
         isDefault: isFirstPage, // First page is always default
         createdAt: new Date(),
         updatedAt: new Date(),
